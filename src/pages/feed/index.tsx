@@ -1,3 +1,4 @@
+import Navigation from "@/components/Navigation";
 import { getPost } from "@/shared/datasource";
 import { Button } from "antd";
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ export default function () {
   return (
     <div>
       Hello Feed <Button>btn</Button>
+      <Navigation />
     </div>
   );
 }

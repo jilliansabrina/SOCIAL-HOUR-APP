@@ -1,6 +1,8 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Button, Layout } from "antd";
 import { Montserrat } from "next/font/google";
+import { useRouter } from "next/router";
+import { useLocalForage } from "@zikwall/use-localforage";
 
 // Import Montserrat
 const montserrat = Montserrat({
@@ -9,7 +11,8 @@ const montserrat = Montserrat({
 });
 
 export default function () {
-  const session = true; // delete this line after adding auth
+  const router = useRouter();
+  const [userId, setUserId] = useLocalForage<number | null>("userId", null);
   return (
     <div
       className={`${montserrat.className}`}
@@ -34,7 +37,7 @@ export default function () {
         <h2 className="header-title" style={{ color: "white" }}>
           SOCIAL HOUR
         </h2>
-        {session ? (
+        {Boolean(userId) ? (
           <div
             style={{
               position: "absolute",
@@ -55,7 +58,10 @@ export default function () {
                 color: "white",
                 borderColor: "#85182a",
               }}
-              // onClick={handleLogout}
+              onClick={() => {
+                localStorage.removeItem("userId");
+                router.push("/signin");
+              }}
             >
               Sign Out
             </Button>
@@ -87,16 +93,3 @@ export default function () {
     </div>
   );
 }
-// uncomment after adding auth
-// export function PageHeader() {
-//     const session = useSession();
-//     const router = useRouter();
-
-//     const signInPage = () => {
-//       router.push("/signin");
-//     };
-
-//     async function handleLogout() {
-//       await supabase.auth.signOut();
-//       signInPage();
-//     }

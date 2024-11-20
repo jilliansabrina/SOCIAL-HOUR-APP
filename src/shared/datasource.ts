@@ -1,6 +1,6 @@
 import { apiCall, HttpMethod } from "./fetch";
 
-export async function createUser(
+export async function fetchCreateUser(
   email: string,
   username: string,
   password: string,
@@ -10,8 +10,24 @@ export async function createUser(
 ) {
   return await apiCall({
     method: HttpMethod.POST,
-    path: "/users",
+    path: "/api/users",
     body: { email, username, password, height, weight, bodyFat },
+  });
+}
+
+type SignInResponse = {
+  user: {
+    email: string;
+    id: number;
+    username: string;
+  };
+};
+
+export async function fetchSignIn(username: string, password: string) {
+  return await apiCall<SignInResponse>({
+    method: HttpMethod.POST,
+    path: "/api/signin",
+    body: { username, password },
   });
 }
 
