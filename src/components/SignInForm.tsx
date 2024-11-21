@@ -25,30 +25,17 @@ export default function SignInForm({ isModalOpen, setIsModalOpen }: Props) {
     mutationFn: async (data: FieldType) => {
       return await fetchSignIn(data.username, data.password);
     },
-    onSuccess: (data) => {
-      console.log("Signed successfully:", data);
-    },
-    onError: (error: any) => {
-      console.error("Error signing in:", error.message);
-    },
   });
 
   const [username, setUsername] = useUsername();
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setIsModalOpen(false);
       setUsername(data.data.user.username);
       router.push("/feed");
     }
   }, [data]);
-
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
 
   const router = useRouter();
   return (
@@ -67,13 +54,11 @@ export default function SignInForm({ isModalOpen, setIsModalOpen }: Props) {
         style={{ maxWidth: 600 }}
         initialValues={{ remember: true }}
         onFinish={(val) => {
-          console.log(val);
           signIn({
             username: val.username,
             password: val.password,
           });
         }}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
         layout="vertical"
       >
@@ -102,7 +87,6 @@ export default function SignInForm({ isModalOpen, setIsModalOpen }: Props) {
             Submit
           </Button>
         </Form.Item>
-        {error && <div style={{ color: "red" }}>R u stooped</div>}
       </Form>
     </Modal>
   );

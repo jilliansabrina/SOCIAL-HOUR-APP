@@ -12,7 +12,7 @@ export function useLocalStorage<E>(
       // otherwise initialize it with the passed initialValue
       return value ? JSON.parse(value) : initialValue;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 
@@ -24,7 +24,7 @@ export function useLocalStorage<E>(
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
       setState(value);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

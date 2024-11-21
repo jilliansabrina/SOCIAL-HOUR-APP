@@ -21,19 +21,7 @@ export default function SignUpForm({ isModalOpen, setIsModalOpen }: Props) {
     mutationFn: async (data: FieldType) => {
       return await fetchCreateUser(data.email, data.username, data.password);
     },
-    onSuccess: (data) => {
-      console.log("User created successfully:", data);
-    },
-    onError: (error: any) => {
-      console.error("Error creating user:", error.message);
-    },
   });
-
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
 
   const router = useRouter();
   return (
@@ -52,7 +40,6 @@ export default function SignUpForm({ isModalOpen, setIsModalOpen }: Props) {
         style={{ maxWidth: 600 }}
         initialValues={{ remember: true }}
         onFinish={(val) => {
-          console.log(val);
           createUser({
             email: val.email,
             username: val.username,
@@ -62,7 +49,6 @@ export default function SignUpForm({ isModalOpen, setIsModalOpen }: Props) {
           setIsModalOpen(false);
           router.push("/feed");
         }}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
         layout="vertical"
       >

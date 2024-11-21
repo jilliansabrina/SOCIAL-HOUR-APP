@@ -16,7 +16,6 @@ export default function PostCardView({ post }: Props) {
   const date = dayjs(post.timestamp);
   const diff = now.diff(date, "day");
   const router = useRouter();
-  console.log(post);
 
   return (
     <Card>

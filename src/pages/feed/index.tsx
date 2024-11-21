@@ -4,7 +4,6 @@ import PostCardView from "@/components/PostCardView";
 import { getFeed } from "@/shared/datasource";
 import { useUsername } from "@/shared/hooks/useLocalStorage";
 import { Space } from "antd";
-import { useEffect } from "react";
 import { useQuery } from "react-query";
 
 export default function () {
@@ -13,9 +12,6 @@ export default function () {
     queryKey: ["fetch-posts"],
     queryFn: () => getFeed(username),
   });
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
   return (
     <div>
       <Navigation />

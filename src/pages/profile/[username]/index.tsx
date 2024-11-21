@@ -1,8 +1,6 @@
 import Navigation from "@/components/Navigation";
 import { fetchUser } from "@/shared/datasource";
-import { useUsername } from "@/shared/hooks/useLocalStorage";
 import { Space } from "antd";
-import { useEffect } from "react";
 import { useQuery } from "react-query";
 import PostCardView from "@/components/PostCardView";
 import { useRouter } from "next/router";
@@ -15,9 +13,6 @@ export default function () {
     queryKey: ["fetch-user", username],
     queryFn: () => fetchUser(username),
   });
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
   return (
     <div>
       <Navigation />
