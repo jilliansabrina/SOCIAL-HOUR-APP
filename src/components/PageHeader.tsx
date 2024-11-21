@@ -59,7 +59,7 @@ export default function () {
                 borderColor: "#85182a",
               }}
               onClick={() => {
-                localStorage.removeItem("userId");
+                localStorage.removeItem("username");
                 router.push("/signin");
               }}
             >

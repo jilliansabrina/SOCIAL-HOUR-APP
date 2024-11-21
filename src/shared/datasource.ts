@@ -51,3 +51,21 @@ export async function getPost(postId: Number) {
     path: `/api/posts/${postId}`,
   });
 }
+
+export async function createPostMutation(
+  username: string,
+  content: string,
+  location?: string,
+  duration?: number
+) {
+  return await apiCall({
+    method: HttpMethod.POST,
+    path: "/api/posts",
+    body: {
+      username,
+      content,
+      location,
+      duration,
+    },
+  });
+}

@@ -36,7 +36,7 @@ export default function SignInForm({ isModalOpen, setIsModalOpen }: Props) {
     if (data) {
       console.log(data);
       setIsModalOpen(false);
-      localStorage.setItem("userId", data.data.user.id.toString());
+      localStorage.setItem("username", data.data.user.username);
       router.push("/feed");
     }
   }, [data]);

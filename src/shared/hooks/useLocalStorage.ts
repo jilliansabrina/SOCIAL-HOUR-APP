@@ -1,6 +1,9 @@
 import { useState } from "react";
 
-export function useLocalStorage<E>(key: string, initialValue: E) {
+export function useLocalStorage<E>(
+  key: string,
+  initialValue: E
+): [E, (value: E) => void] {
   const [state, setState] = useState<E>(() => {
     // Initialize the state
     try {
@@ -26,4 +29,8 @@ export function useLocalStorage<E>(key: string, initialValue: E) {
   };
 
   return [state, setValue];
+}
+
+export function useUsername() {
+  return useLocalStorage<string | null>("username", null);
 }

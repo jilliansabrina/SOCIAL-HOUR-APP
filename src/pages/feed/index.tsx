@@ -1,3 +1,4 @@
+import CreatePostView from "@/components/CreatePostView";
 import Navigation from "@/components/Navigation";
 import { getPost } from "@/shared/datasource";
 import { Button } from "antd";
@@ -16,6 +17,7 @@ export default function () {
     <div>
       <Navigation />
       <h2>Feed page.</h2>
+      <CreatePostView />
     </div>
   );
 }

@@ -25,6 +25,7 @@ export default function () {
 
   const onChange = (data: string) => {
     setValue(data);
+    Router.push(`/profile/${data}`);
   };
 
   const { data, isLoading } = useQuery({
@@ -50,7 +51,11 @@ export default function () {
 
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
-    Router.push(`/${e.key}`);
+    if (e.key === "profile") {
+      Router.push(`/profile/${localStorage.getItem("username")}`);
+    } else {
+      Router.push(`/${e.key}`);
+    }
   };
 
   const items: MenuItem[] = [
@@ -105,11 +110,10 @@ export default function () {
       </ConfigProvider>
       <AutoComplete
         options={options}
-        style={{ width: 300 }}
+        style={{ width: 300, marginBottom: "5px" }}
         onSelect={onChange}
         onSearch={onSearch}
         placeholder="Search"
-        onClick={() => console.log(data)}
       >
         <Input.Search size="large" />
       </AutoComplete>
