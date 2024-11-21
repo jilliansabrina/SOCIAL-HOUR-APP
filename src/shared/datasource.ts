@@ -15,6 +15,20 @@ export async function fetchCreateUser(
   });
 }
 
+export async function fetchUser(userId: number) {
+  return await apiCall({
+    method: HttpMethod.GET,
+    path: `/api/users/${userId}`,
+  });
+}
+
+export async function fetchAllUsers() {
+  return await apiCall({
+    method: HttpMethod.GET,
+    path: `/api/users`,
+  });
+}
+
 type SignInResponse = {
   user: {
     email: string;

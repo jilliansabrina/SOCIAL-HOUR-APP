@@ -14,8 +14,8 @@ export default function () {
   }, [data]);
   return (
     <div>
-      Hello Feed <Button>btn</Button>
       <Navigation />
+      <h2>Feed page.</h2>
     </div>
   );
 }

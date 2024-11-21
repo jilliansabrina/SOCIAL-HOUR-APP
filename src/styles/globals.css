@@ -118,6 +118,11 @@ html, body {
   transition: border-color 0.3s; /* Smooth transition for hover */
 }
 
+/* Remove underline for the search item */
+.ant-menu-horizontal > .no-underline::after {
+  border-bottom: none !important; /* No underline for the search item */
+}
+
 /* Active (selected): Persist underline with color #85182a */
 .ant-menu-horizontal > .ant-menu-item-selected::after {
   border-bottom: 2px solid #85182a !important;
@@ -133,20 +138,11 @@ html, body {
   color: #85182a !important; /* Text color for hover state */
 }
 
-/* Style the navbar container to take full width */
-.navbar {
-  width: 100%; /* Full width of the screen */
-  display: flex; /* Flexbox for layout */
-  justify-content: center; /* Center the menu horizontally */
-  background-color: #f8f9fa; /* Optional: Navbar background color */
+/* Ensure other items retain their hover/active underline */
+.ant-menu-horizontal > .ant-menu-item:hover::after,
+.ant-menu-horizontal > .ant-menu-item-active::after {
+  border-bottom: 2px solid #85182a !important; /* Regular underline for other items */
 }
 
-/* Limit the width of the Menu content */
-.navbar-menu {
-  width: 70%; /* Limit the text width to 70% */
-  display: flex; /* Flexbox for layout */
-  justify-content: space-between; /* Space between menu items */
-  align-items: center; /* Center items vertically */
-}
 
 
