@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function useLocalStorage<E>(
   key: string,
   initialValue: E
-): [E, (value: E) => void] {
-  const [state, setState] = useState<E>(() => {
-    // Initialize the state
+): [E | null, (value: E) => void] {
+  const [state, setState] = useState<E | null>(null);
+
+  useEffect(() => {
     try {
-      const value = window.localStorage.getItem(key);
-      // Check if the local storage already has any values,
-      // otherwise initialize it with the passed initialValue
-      return value ? JSON.parse(value) : initialValue;
+      const item = window.localStorage.getItem(key);
+      setState(item ? JSON.parse(item) : initialValue);
     } catch (error) {
       console.error(error);
     }
@@ -18,8 +17,6 @@ export function useLocalStorage<E>(
 
   const setValue = (value: E) => {
     try {
-      // If the passed value is a callback function,
-      //  then call it with the existing state.
       const valueToStore = value instanceof Function ? value(state) : value;
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
       setState(value);
@@ -32,5 +29,17 @@ export function useLocalStorage<E>(
 }
 
 export function useUsername() {
-  return useLocalStorage<string | null>("username", null);
+  const [username, setUsername] = useLocalStorage<string | null>(
+    "username",
+    null
+  );
+  const signOut = () => {
+    setUsername(null);
+    try {
+      window.localStorage.removeItem("username");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  return [username, setUsername, signOut];
 }
