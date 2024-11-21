@@ -1,5 +1,6 @@
 import { FeedPostRecord, ProfilePostRecord, ProfileRecord } from "@/types/feed";
 import { apiCall, HttpMethod } from "./fetch";
+import { forceLoadUsername } from "./hooks/useLocalStorage";
 
 export async function fetchCreateUser(
   email: string,
@@ -16,10 +17,35 @@ export async function fetchCreateUser(
   });
 }
 
-export async function fetchUser(username?: string | null) {
+export async function fetchUser(username: string) {
   const data = await apiCall<ProfileRecord>({
     method: HttpMethod.GET,
     path: `/api/users/${username}`,
+    headers: {
+      Authorization: forceLoadUsername(),
+    },
+  });
+  return data.data;
+}
+
+export async function followUser(username: string) {
+  const data = await apiCall<ProfileRecord>({
+    method: HttpMethod.POST,
+    path: `/api/follow/${username}`,
+    headers: {
+      Authorization: forceLoadUsername(),
+    },
+  });
+  return data.data;
+}
+
+export async function unfollowUser(username: string) {
+  const data = await apiCall<ProfileRecord>({
+    method: HttpMethod.DELETE,
+    path: `/api/follow/${username}`,
+    headers: {
+      Authorization: forceLoadUsername(),
+    },
   });
   return data.data;
 }

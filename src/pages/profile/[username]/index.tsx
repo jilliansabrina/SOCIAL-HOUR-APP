@@ -1,51 +1,19 @@
 import Navigation from "@/components/Navigation";
-import { fetchUser } from "@/shared/datasource";
-import { Avatar, Button, Space } from "antd";
-import { useQuery } from "react-query";
-import PostCardView from "@/components/PostCardView";
 import { useRouter } from "next/router";
+import ProfileHeader from "@/components/ProfileHeader";
 import { useUsername } from "@/shared/hooks/useLocalStorage";
+import ProfileBody from "@/components/ProfileBody";
 
 export default function () {
   const router = useRouter();
   const username = router.query.username as string;
-  const [loggedUser] = useUsername();
+  const [loggedUser] = useUsername() as string[];
 
-  const { data } = useQuery({
-    queryKey: ["fetch-user", username],
-    queryFn: () => fetchUser(username),
-  });
   return (
     <div>
       <Navigation />
-      <div>
-        <Avatar style={{ backgroundColor: "#85182a", color: "black" }}>
-          {(username ?? " ")[0]?.toUpperCase()}
-        </Avatar>
-        <h1>{`@${username}`}</h1>
-        {username == loggedUser ? (
-          <Button>Edit Profile</Button>
-        ) : (
-          <Button>Follow</Button>
-        )}
-      </div>
-      {(data?.posts.length ?? 0) > 0 ? (
-        data?.posts.map((post) => {
-          return (
-            <Space
-              key={post.id}
-              direction="vertical"
-              style={{
-                display: "flex",
-              }}
-            >
-              <PostCardView post={post} />
-            </Space>
-          );
-        })
-      ) : (
-        <p>Nothing to see here... yet</p>
-      )}
+      <ProfileHeader username={username} loggedUser={loggedUser || ""} />
+      <ProfileBody username={username} />
     </div>
   );
 }

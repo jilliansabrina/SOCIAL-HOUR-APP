@@ -1,5 +1,18 @@
 import { useEffect, useState } from "react";
 
+export function forceLoadUsername() {
+  try {
+    const data = window.localStorage.getItem("username");
+    if (!data) {
+      return null;
+    }
+    return JSON.parse(data);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export function useLocalStorage<E>(
   key: string,
   initialValue: E

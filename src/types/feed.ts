@@ -67,4 +67,5 @@ export type ProfileRecord = {
   id: number;
   username: string;
   email: string;
+  followers: ProfileUserRecord[];
 };
