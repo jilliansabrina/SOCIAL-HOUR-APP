@@ -52,7 +52,10 @@ export default function () {
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
     if (e.key === "profile") {
-      Router.push(`/profile/${localStorage.getItem("username")}`);
+      const username = localStorage.getItem("username");
+      if (username) {
+        Router.push(`/profile/${JSON.parse(username)}`);
+      }
     } else {
       Router.push(`/${e.key}`);
     }

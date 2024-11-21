@@ -3,13 +3,12 @@ import Navigation from "@/components/Navigation";
 import PostCardView from "@/components/PostCardView";
 import { getFeed } from "@/shared/datasource";
 import { useUsername } from "@/shared/hooks/useLocalStorage";
-import { Card, Flex, Space, Typography } from "antd";
+import { Space } from "antd";
 import { useEffect } from "react";
 import { useQuery } from "react-query";
 
 export default function () {
   const [username] = useUsername();
-  console.log(username);
   const { data = [] } = useQuery({
     queryKey: ["fetch-posts"],
     queryFn: () => getFeed(username),
@@ -22,18 +21,22 @@ export default function () {
       <Navigation />
       <h2>Feed page.</h2>
       <CreatePostView />
-      {data.map((post) => {
-        return (
-          <Space
-            direction="vertical"
-            style={{
-              display: "flex",
-            }}
-          >
-            <PostCardView post={post} />
-          </Space>
-        );
-      })}
+      {data.length > 0 ? (
+        data.map((post) => {
+          return (
+            <Space
+              direction="vertical"
+              style={{
+                display: "flex",
+              }}
+            >
+              <PostCardView post={post} />
+            </Space>
+          );
+        })
+      ) : (
+        <p>Nothing to see here... yet</p>
+      )}
     </div>
   );
 }

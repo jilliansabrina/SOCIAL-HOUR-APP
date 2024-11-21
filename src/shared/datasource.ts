@@ -1,4 +1,4 @@
-import { FeedPostRecord } from "@/types/feed";
+import { FeedPostRecord, ProfilePostRecord, ProfileRecord } from "@/types/feed";
 import { apiCall, HttpMethod } from "./fetch";
 
 export async function fetchCreateUser(
@@ -16,11 +16,12 @@ export async function fetchCreateUser(
   });
 }
 
-export async function fetchUser(username: string) {
-  return await apiCall({
+export async function fetchUser(username?: string | null) {
+  const data = await apiCall<ProfileRecord>({
     method: HttpMethod.GET,
     path: `/api/users/${username}`,
   });
+  return data.data;
 }
 
 export async function fetchAllUsers() {
