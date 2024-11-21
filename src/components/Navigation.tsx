@@ -109,6 +109,7 @@ export default function () {
         onSelect={onChange}
         onSearch={onSearch}
         placeholder="Search"
+        onClick={() => console.log(data)}
       >
         <Input.Search size="large" />
       </AutoComplete>

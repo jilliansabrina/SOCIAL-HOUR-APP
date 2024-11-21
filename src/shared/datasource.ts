@@ -15,10 +15,10 @@ export async function fetchCreateUser(
   });
 }
 
-export async function fetchUser(userId: number) {
+export async function fetchUser(username: string) {
   return await apiCall({
     method: HttpMethod.GET,
-    path: `/api/users/${userId}`,
+    path: `/api/users/${username}`,
   });
 }
 

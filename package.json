@@ -12,6 +12,7 @@
     "@ant-design/icons": "^5.5.1",
     "@zikwall/use-localforage": "^1.0.0",
     "antd": "^5.22.1",
+    "dayjs": "^1.11.13",
     "localforage": "^1.10.0",
     "next": "15.0.3",
     "react": "18.3.1",
