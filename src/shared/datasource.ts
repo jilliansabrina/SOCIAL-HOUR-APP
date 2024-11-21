@@ -1,3 +1,4 @@
+import { FeedPostRecord } from "@/types/feed";
 import { apiCall, HttpMethod } from "./fetch";
 
 export async function fetchCreateUser(
@@ -50,6 +51,20 @@ export async function getPost(postId: Number) {
     method: HttpMethod.GET,
     path: `/api/posts/${postId}`,
   });
+}
+
+export async function getFeed(username?: string | null) {
+  if (!username) {
+    return;
+  }
+  const data = await apiCall({
+    method: HttpMethod.GET,
+    path: `/api/feed`,
+    headers: {
+      Authorization: username,
+    },
+  });
+  return data.data as FeedPostRecord[];
 }
 
 export async function createPostMutation(

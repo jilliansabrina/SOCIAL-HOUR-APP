@@ -1,14 +1,18 @@
 import CreatePostView from "@/components/CreatePostView";
 import Navigation from "@/components/Navigation";
-import { getPost } from "@/shared/datasource";
-import { Button } from "antd";
-import { useEffect, useState } from "react";
+import PostCardView from "@/components/PostCardView";
+import { getFeed } from "@/shared/datasource";
+import { useUsername } from "@/shared/hooks/useLocalStorage";
+import { Card, Flex, Space, Typography } from "antd";
+import { useEffect } from "react";
 import { useQuery } from "react-query";
 
 export default function () {
-  const { data, isLoading } = useQuery({
+  const [username] = useUsername();
+  console.log(username);
+  const { data = [] } = useQuery({
     queryKey: ["fetch-posts"],
-    queryFn: () => getPost(1),
+    queryFn: () => getFeed(username),
   });
   useEffect(() => {
     console.log(data);
@@ -18,6 +22,18 @@ export default function () {
       <Navigation />
       <h2>Feed page.</h2>
       <CreatePostView />
+      {data.map((post) => {
+        return (
+          <Space
+            direction="vertical"
+            style={{
+              display: "flex",
+            }}
+          >
+            <PostCardView post={post} />
+          </Space>
+        );
+      })}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { fetchSignIn } from "@/shared/datasource";
+import { useUsername } from "@/shared/hooks/useLocalStorage";
 import { Button, Form, FormProps, Input, Modal } from "antd";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -32,11 +33,13 @@ export default function SignInForm({ isModalOpen, setIsModalOpen }: Props) {
     },
   });
 
+  const [username, setUsername] = useUsername();
+
   useEffect(() => {
     if (data) {
       console.log(data);
       setIsModalOpen(false);
-      localStorage.setItem("username", data.data.user.username);
+      setUsername(data.data.user.username);
       router.push("/feed");
     }
   }, [data]);
