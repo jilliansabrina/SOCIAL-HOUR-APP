@@ -6,7 +6,7 @@ export function forceLoadUsername() {
     if (!data) {
       return null;
     }
-    return JSON.parse(data);
+    return JSON.parse(data) as string;
   } catch (error) {
     console.error(error);
     return null;

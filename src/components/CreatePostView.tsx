@@ -1,13 +1,10 @@
-import { CompassOutlined, DownOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Dropdown, Modal, Select, Input } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { Button, Modal, Select, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
-import { MenuProps } from "antd";
-import ButtonGroup from "antd/es/button/button-group";
 import { useMutation } from "react-query";
 import { createPostMutation } from "@/shared/datasource";
-import { useLocalStorage, useUsername } from "@/shared/hooks/useLocalStorage";
-import { useRouter } from "next/router";
+import { useUsername } from "@/shared/hooks/useLocalStorage";
 
 type FormValues = {
   content: string;
@@ -24,7 +21,6 @@ export default function () {
     mutationKey: "createPostMutation",
     mutationFn: async (data: FormValues) => {
       return await createPostMutation(
-        username!,
         data.content,
         data.location,
         data.workoutDuration

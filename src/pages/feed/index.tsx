@@ -2,15 +2,13 @@ import CreatePostView from "@/components/CreatePostView";
 import Navigation from "@/components/Navigation";
 import PostCardView from "@/components/PostCardView";
 import { getFeed } from "@/shared/datasource";
-import { useUsername } from "@/shared/hooks/useLocalStorage";
 import { Space } from "antd";
 import { useQuery } from "react-query";
 
 export default function () {
-  const [username] = useUsername();
   const { data = [] } = useQuery({
     queryKey: ["fetch-posts"],
-    queryFn: () => getFeed(username),
+    queryFn: () => getFeed(),
   });
   return (
     <div>

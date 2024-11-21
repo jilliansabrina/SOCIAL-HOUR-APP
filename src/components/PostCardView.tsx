@@ -1,9 +1,12 @@
+import { fetchLikes } from "@/shared/datasource";
 import { FeedPostRecord } from "@/types/feed";
 import { HeartTwoTone } from "@ant-design/icons";
 import { Avatar, Button, Card, Flex, Space, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useRouter } from "next/router";
+import { useQuery } from "react-query";
+import LikeButton from "./LikeButton";
 
 dayjs.extend(advancedFormat);
 
@@ -16,6 +19,13 @@ export default function PostCardView({ post }: Props) {
   const date = dayjs(post.timestamp);
   const diff = now.diff(date, "day");
   const router = useRouter();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["fetch-likes", post.id],
+    queryFn: () => fetchLikes(post.id),
+  });
+
+  const likes = typeof data === "number" ? data : 0;
 
   return (
     <Card>
@@ -56,7 +66,7 @@ export default function PostCardView({ post }: Props) {
           >
             Comment
           </Button>
-          <HeartTwoTone twoToneColor="#85182a" />
+          <LikeButton postId={post.id} />
         </div>
       </Flex>
     </Card>
