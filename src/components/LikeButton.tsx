@@ -26,10 +26,11 @@ export default function ({ postId }: LikeButtonProps) {
 
   const router = useRouter();
 
-  const { data: likes, refetch } = useQuery({
+  const { data: likes = [], refetch } = useQuery({
     queryKey: ["fetch-likes", postId],
     queryFn: async () => {
       const result = await fetchLikes(postId);
+      console.log("Likes", result?.usernames);
       return result?.usernames || [];
     },
   });

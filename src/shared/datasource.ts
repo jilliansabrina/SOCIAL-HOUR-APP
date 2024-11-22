@@ -88,7 +88,7 @@ export async function fetchLikes(postId: number) {
     method: HttpMethod.GET,
     path: `/api/posts/${postId}/likes`,
   });
-  return response.data.usernames || [];
+  return response.data || [];
 }
 
 export async function likePost(postId: number, userId: number) {
