@@ -6,7 +6,7 @@ import {
 } from "@/shared/datasource";
 import { useUsername } from "@/shared/hooks/useLocalStorage";
 import { HeartTwoTone } from "@ant-design/icons";
-import { Avatar, List, Modal } from "antd";
+import { Avatar, List, Modal, Spin } from "antd";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -26,7 +26,7 @@ export default function ({ postId }: LikeButtonProps) {
 
   const router = useRouter();
 
-  const { data: likes = [], refetch } = useQuery({
+  const { data: likes, refetch } = useQuery({
     queryKey: ["fetch-likes", postId],
     queryFn: async () => {
       const result = await fetchLikes(postId);
@@ -52,14 +52,14 @@ export default function ({ postId }: LikeButtonProps) {
     },
     onSuccess: () => refetch(),
   });
+
   const showModal = () => {
     setIsModalOpen(true);
   };
   const onCancel = () => {
     setIsModalOpen(false);
   };
-
-  const isLikedByUser = likes.includes(loggedUsername);
+  const isLikedByUser = likes?.includes(loggedUsername);
 
   const toggleLike = () => {
     if (isLoading || isLiking || isUnliking) {
@@ -76,12 +76,12 @@ export default function ({ postId }: LikeButtonProps) {
   return (
     <div>
       <HeartTwoTone
-        twoToneColor={isLikedByUser ? "#85182a" : "black"}
+        twoToneColor={isLikedByUser ? "#85182a" : "#fff0f3"}
         style={{ fontSize: "24px", cursor: "pointer" }}
         onClick={toggleLike} // Toggle like/unlike on click
       />
       <span style={{ marginLeft: "8px" }} onClick={showModal}>
-        {likes.length} likes
+        {likes === null ? <Spin size="small" /> : likes?.length} likes
       </span>
       <Modal
         title="Liked by"

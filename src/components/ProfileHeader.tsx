@@ -24,7 +24,7 @@ export default function ProfileHeader({
     useMutation({
       mutationKey: ["follow-user", username],
       mutationFn: () => followUser(username),
-      onMutate: async () => {
+      onSuccess: async () => {
         await refetch();
       },
     });
@@ -33,7 +33,7 @@ export default function ProfileHeader({
     useMutation({
       mutationKey: ["unfollow-user", username],
       mutationFn: () => unfollowUser(username),
-      onMutate: async () => {
+      onSuccess: async () => {
         await refetch();
       },
     });

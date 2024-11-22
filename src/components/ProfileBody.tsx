@@ -2,6 +2,7 @@ import { useQuery } from "react-query";
 import { Space } from "antd";
 import { fetchUser } from "@/shared/datasource";
 import PostCardView from "@/components/PostCardView";
+import { FeedPostRecord } from "@/types/feed";
 
 interface ProfileBodyProps {
   username: string;
@@ -20,7 +21,7 @@ export default function ProfileBody({ username }: ProfileBodyProps) {
   return (
     <div>
       {posts.length > 0 ? (
-        posts.map((post) => (
+        posts.map((post: FeedPostRecord) => (
           <Space
             key={post.id}
             direction="vertical"

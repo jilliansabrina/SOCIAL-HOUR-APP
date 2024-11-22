@@ -6,7 +6,7 @@ import { Space } from "antd";
 import { useQuery } from "react-query";
 
 export default function () {
-  const { data = [] } = useQuery({
+  const { data = [], refetch } = useQuery({
     queryKey: ["fetch-posts"],
     queryFn: () => getFeed(),
   });
@@ -14,7 +14,7 @@ export default function () {
     <div>
       <Navigation />
       <h2>Feed page.</h2>
-      <CreatePostView />
+      <CreatePostView refetch={refetch} />
       {data.length > 0 ? (
         data.map((post) => {
           return (
@@ -24,7 +24,7 @@ export default function () {
                 display: "flex",
               }}
             >
-              <PostCardView post={post} />
+              <PostCardView post={post} refetch={refetch} />
             </Space>
           );
         })

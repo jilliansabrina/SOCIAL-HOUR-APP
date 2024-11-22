@@ -7,25 +7,20 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import LikeButton from "./LikeButton";
+import CommentButton from "./CommentButton";
 
 dayjs.extend(advancedFormat);
 
 type Props = {
   post: FeedPostRecord;
+  refetch: () => void;
 };
 
-export default function PostCardView({ post }: Props) {
+export default function PostCardView({ post, refetch }: Props) {
   const now = dayjs();
   const date = dayjs(post.timestamp);
   const diff = now.diff(date, "day");
   const router = useRouter();
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["fetch-likes", post.id],
-    queryFn: () => fetchLikes(post.id),
-  });
-
-  const likes = typeof data === "number" ? data : 0;
 
   return (
     <Card>
@@ -56,16 +51,11 @@ export default function PostCardView({ post }: Props) {
             gap: "10px",
           }}
         >
-          <Button
-            style={{
-              backgroundColor: "#85182a",
-              borderColor: "#85182a",
-              color: "white",
-            }}
-            type="primary"
-          >
-            Comment
-          </Button>
+          <CommentButton
+            comments={post.comments}
+            postId={post.id}
+            refetchPost={refetch}
+          />
           <LikeButton postId={post.id} />
         </div>
       </Flex>

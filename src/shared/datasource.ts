@@ -88,7 +88,7 @@ export async function fetchLikes(postId: number) {
     method: HttpMethod.GET,
     path: `/api/posts/${postId}/likes`,
   });
-  return response.data || [];
+  return response.data.usernames || [];
 }
 
 export async function likePost(postId: number, userId: number) {
@@ -132,5 +132,29 @@ export async function createPostMutation(
       location,
       duration,
     },
+  });
+}
+
+export async function addCommentMutation(
+  postId: number,
+  authorId: number,
+  content: string
+) {
+  const username = forceLoadUsername();
+  return await apiCall({
+    method: HttpMethod.POST,
+    path: "/api/comments",
+    body: {
+      postId,
+      authorId,
+      content,
+    },
+  });
+}
+
+export async function deleteCommentMutation(commentId: number) {
+  return await apiCall({
+    method: HttpMethod.DELETE,
+    path: `/api/comments/${commentId}`,
   });
 }

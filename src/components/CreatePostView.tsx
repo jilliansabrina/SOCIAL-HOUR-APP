@@ -12,7 +12,11 @@ type FormValues = {
   location?: string;
 };
 
-export default function () {
+type Props = {
+  refetch: () => void;
+};
+
+export default function ({ refetch }: Props) {
   const {
     mutate: createPost,
     error,
@@ -25,6 +29,9 @@ export default function () {
         data.location,
         data.workoutDuration
       );
+    },
+    onSuccess: () => {
+      refetch();
     },
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
