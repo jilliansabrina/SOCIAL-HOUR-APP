@@ -1,6 +1,7 @@
 import { useUsername } from "@/shared/hooks/useLocalStorage";
 import { FeedCommentRecord, FeedPostRecord } from "@/types/feed";
 import { FundViewOutlined, MessageTwoTone } from "@ant-design/icons";
+import { Spin } from "antd";
 import { Avatar, Button, Input, List, Modal } from "antd";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -79,6 +80,9 @@ export default function CommentButton({
         style={{ fontSize: "24px", cursor: "pointer" }}
         onClick={showModal}
       />
+      <span style={{ marginLeft: "8px" }} onClick={showModal}>
+        {comments === null ? <Spin size="small" /> : comments?.length} comments
+      </span>
       <Modal
         title={"Comments"}
         footer={null}
@@ -112,6 +116,16 @@ export default function CommentButton({
                   }
                   description={comment.content}
                 />
+                {loggedUsername === comment.author.username && (
+                  <Button
+                    type="text"
+                    danger
+                    loading={isDeleting}
+                    onClick={() => deleteComment({ commentId: comment.id })}
+                  >
+                    Delete
+                  </Button>
+                )}
               </List.Item>
             );
           }}
