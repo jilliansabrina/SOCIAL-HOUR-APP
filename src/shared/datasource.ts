@@ -117,6 +117,24 @@ export async function getFeed() {
   return data.data as FeedPostRecord[];
 }
 
+export async function fetchFollowers(username: string) {
+  const data = await apiCall({
+    method: HttpMethod.GET,
+    path: `/api/users/${username}/followers`,
+    headers: generateHeaders(),
+  });
+  return data || []; // Return an empty array if no data is found
+}
+
+export async function fetchFollowing(username: string) {
+  const data = await apiCall({
+    method: HttpMethod.GET,
+    path: `/api/users/${username}/following`,
+    headers: generateHeaders(),
+  });
+  return data || []; // Return an empty array if no data is found
+}
+
 export async function createPostMutation(
   content: string,
   location?: string,
