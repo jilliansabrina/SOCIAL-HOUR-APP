@@ -136,9 +136,17 @@ export async function fetchFollowing(username: string) {
 }
 
 export async function createPostMutation(
+  workoutType: string,
   content: string,
   location?: string,
-  duration?: number
+  exercises?: Array<{
+    name: string;
+    sets?: number;
+    reps?: number;
+    weight?: number;
+    distance?: number;
+    pace?: number;
+  }>
 ) {
   const username = forceLoadUsername();
   return await apiCall({
@@ -148,7 +156,7 @@ export async function createPostMutation(
       username,
       content,
       location,
-      duration,
+      exercises,
     },
   });
 }
