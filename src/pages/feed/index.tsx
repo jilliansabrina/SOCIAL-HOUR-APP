@@ -19,6 +19,7 @@ export default function () {
         data.map((post) => {
           return (
             <Space
+              key={post.id}
               direction="vertical"
               style={{
                 display: "flex",

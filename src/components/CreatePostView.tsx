@@ -352,6 +352,7 @@ export default function ({ refetch }: Props) {
                 ];
               }
 
+              console.log({ content, location, workoutType, exercises });
               createPost({ content, location, workoutType, exercises });
             }}
           >

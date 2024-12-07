@@ -154,6 +154,7 @@ export async function createPostMutation(
     path: "/api/posts",
     body: {
       username,
+      workoutType,
       content,
       location,
       exercises,
