@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Modal, TreeSelect, Input, Form, Table } from "antd";
+import { Button, Modal, TreeSelect, Input, Form, Table, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
@@ -32,80 +32,39 @@ const workoutData = [
     value: "cardio",
     title: "Cardio",
     children: [
-      {
-        value: "cardio.running",
-        title: "Running",
-      },
-      {
-        value: "cardio.walking",
-        title: "Walking",
-      },
-      {
-        value: "cardio.stairmaster",
-        title: "Stairmaster",
-      },
-      {
-        value: "cardio.cycling",
-        title: "Cycling",
-      },
+      { value: "cardio.running", title: "Running" },
+      { value: "cardio.walking", title: "Walking" },
+      { value: "cardio.stairmaster", title: "Stairmaster" },
+      { value: "cardio.cycling", title: "Cycling" },
     ],
   },
   {
     value: "strength",
     title: "Strength Training",
     children: [
-      {
-        value: "strength.bodybuilding",
-        title: "Bodybuilding",
-      },
-      {
-        value: "strength.circuit",
-        title: "Circuit",
-      },
-      {
-        value: "strength.powerlifting",
-        title: "Powerlifting",
-      },
+      { value: "strength.bodybuilding", title: "Bodybuilding" },
+      { value: "strength.circuit", title: "Circuit" },
+      { value: "strength.powerlifting", title: "Powerlifting" },
     ],
   },
   {
     value: "flexibility",
     title: "Flexibility",
     children: [
-      {
-        value: "flexibility.yoga",
-        title: "Yoga",
-      },
-      {
-        value: "flexibility.pilates",
-        title: "Pilates",
-      },
-      {
-        value: "flexibility.stretching",
-        title: "Stretching",
-      },
+      { value: "flexibility.yoga", title: "Yoga" },
+      { value: "flexibility.pilates", title: "Pilates" },
+      { value: "flexibility.stretching", title: "Stretching" },
     ],
   },
   {
     value: "other",
     title: "Other",
     children: [
-      {
-        value: "other.dancing",
-        title: "Dancing",
-      },
-      {
-        value: "other.swimming",
-        title: "Swimming",
-      },
+      { value: "other.dancing", title: "Dancing" },
+      { value: "other.swimming", title: "Swimming" },
     ],
   },
 ];
-
-const workoutTypeMap = {
-  cardio: ["running", "walking", "cycling"],
-  strength: ["bodybuilding", "powerlifting", "circuit"],
-};
 
 type StrengthExercise = {
   key: number;
@@ -129,11 +88,17 @@ export default function ({ refetch }: Props) {
       return await createPostMutation(
         data.content,
         data.location || "",
-        data.workoutType
+        data.workoutType,
+        data.exercises
       );
     },
     onSuccess: () => {
+      message.success("Post created successfully!");
       refetch();
+    },
+    onError: (err) => {
+      message.error("Failed to create post. Please try again.");
+      console.error(err);
     },
   });
 
@@ -143,7 +108,6 @@ export default function ({ refetch }: Props) {
   const [selectedWorkout, setSelectedWorkout] = useState<string | undefined>(
     undefined
   );
-  const [imageURL, setImageURL] = useState<string | null>(null);
   const [location, setLocation] = useState("");
   const [strengthExercises, setStrengthExercises] = useState<
     StrengthExercise[]
@@ -154,6 +118,8 @@ export default function ({ refetch }: Props) {
     pace: "",
   });
 
+  const [username] = useUsername();
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -161,16 +127,6 @@ export default function ({ refetch }: Props) {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-
-  useEffect(() => {
-    if (data?.data) {
-      setContent("");
-      setLocation("");
-      setIsModalOpen(false);
-    }
-  }, [data]);
-
-  const [username] = useUsername();
 
   const addStrengthExercise = () => {
     setStrengthExercises([
@@ -191,19 +147,24 @@ export default function ({ refetch }: Props) {
     value: string
   ) => {
     const updatedExercises = [...strengthExercises];
-    updatedExercises[index] = {
-      ...updatedExercises[index],
-      [field]: value, // Safely update the specific field
-    };
+    updatedExercises[index] = { ...updatedExercises[index], [field]: value };
     setStrengthExercises(updatedExercises);
   };
+
+  useEffect(() => {
+    if (data?.data) {
+      setContent("");
+      setLocation("");
+      setStrengthExercises([]);
+      setCardioDetails({ distance: "", duration: "", pace: "" });
+      setIsModalOpen(false);
+    }
+  }, [data]);
 
   return (
     <div>
       <Button
-        style={{
-          backgroundColor: "#85182a",
-        }}
+        style={{ backgroundColor: "#85182a" }}
         shape="round"
         icon={<PlusOutlined style={{ color: "white" }} />}
         onClick={showModal}
@@ -219,31 +180,27 @@ export default function ({ refetch }: Props) {
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
-          margin: "30px 15px 15px 15 px",
+          margin: "30px 15px 15px 15px",
         }}
       >
-        <div style={{ color: "black", marginBottom: "10px" }}>
-          <TreeSelect
-            showSearch
-            style={{ width: "100%" }}
-            value={selectedWorkout}
-            dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
-            placeholder="Select workout type"
-            allowClear
-            treeDefaultExpandAll
-            onChange={(value) => {
-              setSelectedWorkout(value); // Display full selected value
-              // Map value to parent category for rendering
-              const parentWorkout =
-                workoutData.find((category) =>
-                  category.children?.some((child) => child.value === value)
-                )?.value || value;
-              setWorkout(parentWorkout); // Derive parent for rendering logic
-            }}
-            treeData={workoutData}
-            treeNodeFilterProp="title"
-          />
-        </div>
+        <TreeSelect
+          showSearch
+          style={{ width: "100%" }}
+          value={selectedWorkout}
+          dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
+          placeholder="Select workout type"
+          allowClear
+          treeDefaultExpandAll
+          onChange={(value) => {
+            setSelectedWorkout(value);
+            const parentWorkout =
+              workoutData.find((category) =>
+                category.children?.some((child) => child.value === value)
+              )?.value || value;
+            setWorkout(parentWorkout);
+          }}
+          treeData={workoutData}
+        />
         {workout === "strength" && (
           <div style={{ margin: "10px" }}>
             <Table
@@ -290,7 +247,7 @@ export default function ({ refetch }: Props) {
                   ),
                 },
                 {
-                  title: "Weight (lb)",
+                  title: "Weight",
                   dataIndex: "weight",
                   render: (_, record, index) => (
                     <Input
@@ -304,16 +261,11 @@ export default function ({ refetch }: Props) {
               ]}
               pagination={false}
             />
-            <Button
-              onClick={addStrengthExercise}
-              type="dashed"
-              style={{ marginTop: "10px" }}
-            >
+            <Button onClick={addStrengthExercise} type="dashed">
               Add Exercise
             </Button>
           </div>
         )}
-
         {workout === "cardio" && (
           <Form layout="vertical">
             <Form.Item label="Distance (miles)">
@@ -354,59 +306,53 @@ export default function ({ refetch }: Props) {
         <TextArea
           rows={4}
           placeholder="How was your workout?"
-          style={{
-            width: 300,
-            margin: "10px",
-          }}
           value={content}
           onChange={(e) => setContent(e.currentTarget.value)}
         />
-        <div>
-          <Input
-            placeholder={"Add location"}
-            value={location}
-            onChange={(e) => setLocation(e.currentTarget.value)}
-          />
-          <Button>Upload Photo</Button>
-        </div>
+        <Input
+          placeholder="Add location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
         <div>
           <Button onClick={handleCancel}>Cancel</Button>
           <Button
             onClick={() => {
-              const workoutType = workout; // e.g., "strength", "cardio", etc.
-              const locationValue = location || ""; // Default to an empty string if undefined
-              let exercises: Exercise[] = []; // Explicitly type `exercises` as an array of `Exercise`
+              const [workoutCategory, subcategory] = (
+                selectedWorkout || ""
+              ).split(".");
+              const workoutType = workoutCategory.toUpperCase();
+              const exerciseName = subcategory
+                ? subcategory.charAt(0).toUpperCase() + subcategory.slice(1)
+                : "Workout";
 
-              if (workoutType === "strength") {
+              let exercises: Exercise[] = [];
+
+              if (workoutType === "STRENGTH") {
                 exercises = strengthExercises.map((exercise) => ({
                   name: exercise.exercise,
-                  sets: parseInt(exercise.sets, 10) || undefined,
-                  reps: parseInt(exercise.reps, 10) || undefined,
+                  sets: parseInt(exercise.sets) || undefined,
+                  reps: parseInt(exercise.reps) || undefined,
                   weight: parseFloat(exercise.weight) || undefined,
                 }));
-              } else if (workoutType === "cardio") {
+              } else if (workoutType === "CARDIO") {
                 exercises = [
                   {
-                    name: selectedWorkout?.split(".")[1] || "Cardio",
-                    distance: parseFloat(cardioDetails.distance) || undefined,
-                    duration: parseFloat(cardioDetails.duration) || undefined,
-                    pace: parseFloat(cardioDetails.pace) || undefined,
-                  },
-                ];
-              } else if (workoutType === "other") {
-                exercises = [
-                  {
-                    name: selectedWorkout?.split(".")[1] || "Other",
+                    name: exerciseName,
+                    distance: cardioDetails.distance
+                      ? parseFloat(cardioDetails.distance)
+                      : undefined, // Convert string to number
+                    duration: cardioDetails.duration
+                      ? parseFloat(cardioDetails.duration)
+                      : undefined, // Convert string to number
+                    pace: cardioDetails.pace
+                      ? parseFloat(cardioDetails.pace)
+                      : undefined, // Convert string to number
                   },
                 ];
               }
 
-              createPost({
-                content,
-                location: locationValue,
-                workoutType,
-                exercises, // Now TypeScript knows `exercises` is of type `Exercise[]`
-              });
+              createPost({ content, location, workoutType, exercises });
             }}
           >
             Post

@@ -30,7 +30,6 @@ export default function ({ postId }: LikeButtonProps) {
     queryKey: ["fetch-likes", postId],
     queryFn: async () => {
       const result = await fetchLikes(postId);
-      console.log("Likes", result?.usernames);
       return result?.usernames || [];
     },
   });
