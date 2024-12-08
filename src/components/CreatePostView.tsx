@@ -1,5 +1,14 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Modal, TreeSelect, Input, Form, Table, message } from "antd";
+import {
+  Button,
+  Modal,
+  TreeSelect,
+  Input,
+  Form,
+  Table,
+  message,
+  Typography,
+} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
@@ -164,110 +173,156 @@ export default function ({ refetch }: Props) {
   return (
     <div>
       <Button
-        style={{ backgroundColor: "#85182a" }}
+        style={{
+          backgroundColor: "#85182a",
+          color: "white",
+          borderRadius: "50px",
+          fontWeight: "bold",
+          padding: "15px 25px",
+          fontSize: "18px",
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+          transition: "all 0.3s ease",
+        }}
         shape="round"
-        icon={<PlusOutlined style={{ color: "white" }} />}
+        icon={<PlusOutlined style={{ color: "white", fontSize: "22px" }} />}
         onClick={showModal}
-      />
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.backgroundColor = "#9b1e34")
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.backgroundColor = "#85182a")
+        }
+      >
+        Create Post
+      </Button>
+
       <Modal
-        title={"Share Your Progress"}
+        title={
+          <div style={{ textAlign: "center", fontWeight: "bold" }}>
+            Share Your Progress
+          </div>
+        }
         open={isModalOpen}
         footer={null}
         closable={false}
+        centered
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          margin: "30px 15px 15px 15px",
+          maxWidth: "600px",
+          margin: "auto",
         }}
       >
-        <TreeSelect
-          showSearch
-          style={{ width: "100%" }}
-          value={selectedWorkout}
-          dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
-          placeholder="Select workout type"
-          allowClear
-          treeDefaultExpandAll
-          onChange={(value) => {
-            setSelectedWorkout(value);
-            const parentWorkout =
-              workoutData.find((category) =>
-                category.children?.some((child) => child.value === value)
-              )?.value || value;
-            setWorkout(parentWorkout);
-          }}
-          treeData={workoutData}
-        />
+        <div style={{ marginBottom: "20px" }}>
+          <TreeSelect
+            showSearch
+            style={{ width: "100%" }}
+            value={selectedWorkout}
+            dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
+            placeholder="Select workout type"
+            allowClear
+            treeDefaultExpandAll
+            onChange={(value) => {
+              setSelectedWorkout(value);
+              const parentWorkout =
+                workoutData.find((category) =>
+                  category.children?.some((child) => child.value === value)
+                )?.value || value;
+              setWorkout(parentWorkout);
+            }}
+            treeData={workoutData}
+          />
+        </div>
         {workout === "strength" && (
-          <div style={{ margin: "10px" }}>
-            <Table
-              dataSource={strengthExercises}
-              columns={[
-                {
-                  title: "Exercise",
-                  dataIndex: "exercise",
-                  render: (_, record, index) => (
-                    <Input
-                      placeholder="Exercise"
-                      onChange={(e) =>
-                        updateStrengthExercise(
-                          index,
-                          "exercise",
-                          e.target.value
-                        )
-                      }
-                    />
-                  ),
-                },
-                {
-                  title: "Sets",
-                  dataIndex: "sets",
-                  render: (_, record, index) => (
-                    <Input
-                      placeholder="Sets"
-                      onChange={(e) =>
-                        updateStrengthExercise(index, "sets", e.target.value)
-                      }
-                    />
-                  ),
-                },
-                {
-                  title: "Reps",
-                  dataIndex: "reps",
-                  render: (_, record, index) => (
-                    <Input
-                      placeholder="Reps"
-                      onChange={(e) =>
-                        updateStrengthExercise(index, "reps", e.target.value)
-                      }
-                    />
-                  ),
-                },
-                {
-                  title: "Weight",
-                  dataIndex: "weight",
-                  render: (_, record, index) => (
-                    <Input
-                      placeholder="Weight"
-                      onChange={(e) =>
-                        updateStrengthExercise(index, "weight", e.target.value)
-                      }
-                    />
-                  ),
-                },
-              ]}
-              pagination={false}
-            />
-            <Button onClick={addStrengthExercise} type="dashed">
+          <div style={{ marginTop: "20px" }}>
+            <Typography.Text
+              strong
+              style={{
+                marginBottom: "10px",
+                display: "block",
+              }}
+            >
+              Enter Strength Exercise Details:
+            </Typography.Text>
+            <div style={{ marginBottom: "20px" }}>
+              <Table
+                dataSource={strengthExercises}
+                columns={[
+                  {
+                    title: "Exercise",
+                    dataIndex: "exercise",
+                    render: (_, record, index) => (
+                      <Input
+                        placeholder="Exercise"
+                        value={record.exercise}
+                        onChange={(e) =>
+                          updateStrengthExercise(
+                            index,
+                            "exercise",
+                            e.target.value
+                          )
+                        }
+                      />
+                    ),
+                  },
+                  {
+                    title: "Sets",
+                    dataIndex: "sets",
+                    render: (_, record, index) => (
+                      <Input
+                        placeholder="Sets"
+                        value={record.sets}
+                        onChange={(e) =>
+                          updateStrengthExercise(index, "sets", e.target.value)
+                        }
+                      />
+                    ),
+                  },
+                  {
+                    title: "Reps",
+                    dataIndex: "reps",
+                    render: (_, record, index) => (
+                      <Input
+                        placeholder="Reps"
+                        value={record.reps}
+                        onChange={(e) =>
+                          updateStrengthExercise(index, "reps", e.target.value)
+                        }
+                      />
+                    ),
+                  },
+                  {
+                    title: "Weight",
+                    dataIndex: "weight",
+                    render: (_, record, index) => (
+                      <Input
+                        placeholder="Weight"
+                        value={record.weight}
+                        onChange={(e) =>
+                          updateStrengthExercise(
+                            index,
+                            "weight",
+                            e.target.value
+                          )
+                        }
+                      />
+                    ),
+                  },
+                ]}
+                pagination={false}
+                bordered
+              />
+            </div>
+            <Button
+              onClick={addStrengthExercise}
+              type="dashed"
+              style={{ marginBottom: "20px", width: "100%" }}
+            >
               Add Exercise
             </Button>
           </div>
         )}
+
         {workout === "cardio" && (
-          <Form layout="vertical">
+          <Form layout="vertical" style={{ marginTop: "20px" }}>
             <Form.Item label="Distance (miles)">
               <Input
                 placeholder="Enter distance"
@@ -303,28 +358,32 @@ export default function ({ refetch }: Props) {
             </Form.Item>
           </Form>
         )}
-        <TextArea
-          rows={4}
-          placeholder="How was your workout?"
-          value={content}
-          onChange={(e) => setContent(e.currentTarget.value)}
-        />
-        <Input
-          placeholder="Add location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
-        <div>
-          <Button onClick={handleCancel}>Cancel</Button>
+        <div style={{ marginBottom: "20px" }}>
+          <TextArea
+            rows={4}
+            placeholder="How was your workout?"
+            value={content}
+            onChange={(e) => setContent(e.currentTarget.value)}
+            style={{ marginBottom: "10px" }}
+          />
+          <Input
+            placeholder="Add location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            style={{ marginBottom: "10px" }}
+          />
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Button onClick={handleCancel} danger>
+            Cancel
+          </Button>
           <Button
+            type="primary"
             onClick={() => {
               const [workoutCategory, subcategory] = (
                 selectedWorkout || ""
               ).split(".");
               const workoutType = workoutCategory.toUpperCase();
-              const exerciseName = subcategory
-                ? subcategory.charAt(0).toUpperCase() + subcategory.slice(1)
-                : "Workout";
 
               let exercises: Exercise[] = [];
 
@@ -338,21 +397,20 @@ export default function ({ refetch }: Props) {
               } else if (workoutType === "CARDIO") {
                 exercises = [
                   {
-                    subcategory: exerciseName,
+                    subcategory: subcategory,
                     distance: cardioDetails.distance
                       ? parseFloat(cardioDetails.distance)
-                      : undefined, // Convert string to number
+                      : undefined,
                     duration: cardioDetails.duration
                       ? parseFloat(cardioDetails.duration)
-                      : undefined, // Convert string to number
+                      : undefined,
                     pace: cardioDetails.pace
                       ? parseFloat(cardioDetails.pace)
-                      : undefined, // Convert string to number
+                      : undefined,
                   },
                 ];
               }
 
-              console.log({ content, location, workoutType, exercises });
               createPost({ workoutType, content, location, exercises });
             }}
           >

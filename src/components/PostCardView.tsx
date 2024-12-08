@@ -129,7 +129,13 @@ export default function PostCardView({ post, refetch }: Props) {
           </Typography.Text>
           <Tooltip title={date.format("ddd MMM Do YYYY h:mm A")}>
             <Typography.Text type="secondary">
-              {`Posted ${diff} days ago`}
+              {`Posted ${
+                diff === 0
+                  ? "today"
+                  : diff === 1
+                  ? "yesterday"
+                  : `${diff} days ago`
+              }`}
             </Typography.Text>
           </Tooltip>
         </div>
@@ -197,7 +203,9 @@ export default function PostCardView({ post, refetch }: Props) {
           <LikeButton postId={post.id} />
         </div>
         <Tooltip title={date.format("ddd MMM Do YYYY h:mm A")}>
-          <Typography.Text type="secondary">{`${diff} days ago`}</Typography.Text>
+          <Typography.Text type="secondary">
+            {diff === 0 ? "today" : `${diff} days ago`}
+          </Typography.Text>
         </Tooltip>
       </div>
 

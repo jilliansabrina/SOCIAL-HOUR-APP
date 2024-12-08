@@ -106,7 +106,7 @@ export default function ({ postId }: LikeButtonProps) {
                   title={
                     <a
                       onClick={() => router.push(`/profile/${likedBy}`)}
-                      style={{ cursor: "pointer", color: "#1890ff" }}
+                      style={{ cursor: "pointer", color: "black" }}
                     >
                       @{likedBy}
                     </a>
