@@ -140,11 +140,12 @@ export async function createPostMutation(
   content: string,
   location?: string,
   exercises?: Array<{
-    name: string;
+    subcategory?: string;
     sets?: number;
     reps?: number;
     weight?: number;
     distance?: number;
+    duration?: number;
     pace?: number;
   }>
 ) {

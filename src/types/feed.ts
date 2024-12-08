@@ -18,16 +18,29 @@ export type FeedLikeRecord = {
   authorId: number;
 };
 
+export type FeedExerciseRecord = {
+  id: number;
+  subcategory?: string | null;
+  sets?: number | null;
+  reps?: number | null;
+  distance?: number | null;
+  duration?: number | null;
+  pace?: number | null;
+  weight?: number | null;
+  [key: string]: string | number | null | undefined; // Add index signature
+};
+
 export type FeedPostRecord = {
   id: number;
   authorId: number;
   content: string;
   timestamp: string;
-  workoutDuration: number | null;
   location: string | null;
   author: FeedUserRecord;
+  workoutType: string;
   comments: FeedCommentRecord[];
   likes: FeedLikeRecord[];
+  exercises: FeedExerciseRecord[];
 };
 
 export type ProfileRecord = {

@@ -7,7 +7,7 @@ import { createPostMutation } from "@/shared/datasource";
 import { useUsername } from "@/shared/hooks/useLocalStorage";
 
 type Exercise = {
-  name: string;
+  subcategory?: string;
   sets?: number;
   reps?: number;
   weight?: number;
@@ -330,7 +330,7 @@ export default function ({ refetch }: Props) {
 
               if (workoutType === "STRENGTH") {
                 exercises = strengthExercises.map((exercise) => ({
-                  name: exercise.exercise,
+                  subcategory: exercise.exercise,
                   sets: parseInt(exercise.sets) || undefined,
                   reps: parseInt(exercise.reps) || undefined,
                   weight: parseFloat(exercise.weight) || undefined,
@@ -338,7 +338,7 @@ export default function ({ refetch }: Props) {
               } else if (workoutType === "CARDIO") {
                 exercises = [
                   {
-                    name: exerciseName,
+                    subcategory: exerciseName,
                     distance: cardioDetails.distance
                       ? parseFloat(cardioDetails.distance)
                       : undefined, // Convert string to number
