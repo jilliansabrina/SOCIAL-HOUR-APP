@@ -86,9 +86,9 @@ export default function ({ refetch }: Props) {
         throw new Error("Workout type is required");
       }
       return await createPostMutation(
+        data.workoutType,
         data.content,
         data.location || "",
-        data.workoutType,
         data.exercises
       );
     },
@@ -353,7 +353,7 @@ export default function ({ refetch }: Props) {
               }
 
               console.log({ content, location, workoutType, exercises });
-              createPost({ content, location, workoutType, exercises });
+              createPost({ workoutType, content, location, exercises });
             }}
           >
             Post
