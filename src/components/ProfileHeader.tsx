@@ -36,6 +36,7 @@ export default function ProfileHeader({
   const [following, setFollowing] = useState<string[]>([]);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false); // New modal state
   const [newUsername, setNewUsername] = useState(""); // State for new username
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -95,19 +96,40 @@ export default function ProfileHeader({
 
   const { mutate: updateUsernameMutation, isLoading: isUpdatingUsername } =
     useMutation(
-      (newUsername: string) => updateUsername(username, newUsername), // Call the API
+      (newUsername: string) => updateUsername(username, newUsername), // API call
       {
         onSuccess: async () => {
+          setLoading(true); // Set loading to true
           message.success("Username updated successfully!");
-          setIsEditProfileModalOpen(false); // Close the modal
-          await refetch(); // Refetch the profile to reflect changes
-          router.push(`/profile/${newUsername}`); // Redirect to the new username profile
+
+          try {
+            // Wait for all asynchronous operations to complete
+            await Promise.all([
+              new Promise((resolve) => {
+                window.localStorage.setItem("username", newUsername);
+                resolve(null); // Resolve immediately as localStorage is synchronous
+              }),
+              refetch(), // Refetch the profile data
+            ]);
+
+            // After all updates, redirect to the new profile
+            router.push(`/profile/${newUsername}`);
+          } catch (error) {
+            console.error("Error completing all operations:", error);
+            message.error(
+              "An error occurred while updating your profile. Please try again."
+            );
+          } finally {
+            setLoading(false); // Set loading to false
+            setIsEditProfileModalOpen(false); // Close the modal
+          }
         },
         onError: (error: any) => {
           message.error(
             error.response?.data?.error ||
               "Failed to update the username. Please try again."
           );
+          console.error("Error updating username:", error);
         },
       }
     );
@@ -136,7 +158,18 @@ export default function ProfileHeader({
 
   const isFollowing = followers.includes(loggedUser);
 
-  return (
+  return loading ? (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh", // Full height for centering
+      }}
+    >
+      <Spin size="large" tip="Loading profile..." />
+    </div>
+  ) : (
     <div
       style={{
         backgroundColor: "#f9f9f9",
