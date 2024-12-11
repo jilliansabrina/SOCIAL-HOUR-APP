@@ -1,14 +1,14 @@
-export type FeedUserRecord = {
-  id: number;
-  username: string;
-};
-
 export type FeedCommentRecord = {
   id: number;
   content: string;
   timestamp: string;
   postId: number;
   author: FeedUserRecord;
+};
+
+export type FeedUserRecord = {
+  id: number;
+  username: string;
 };
 
 export type FeedLikeRecord = {
@@ -20,7 +20,7 @@ export type FeedLikeRecord = {
 
 export type FeedExerciseRecord = {
   id: number;
-  subcategory?: string | null;
+  name: string;
   sets?: number | null;
   reps?: number | null;
   distance?: number | null;
@@ -30,6 +30,13 @@ export type FeedExerciseRecord = {
   [key: string]: string | number | null | undefined; // Add index signature
 };
 
+export type FeedWorkoutRecord = {
+  id: number;
+  type: string;
+  subtype?: string | null;
+  exercises: FeedExerciseRecord[];
+};
+
 export type FeedPostRecord = {
   id: number;
   authorId: number;
@@ -37,10 +44,15 @@ export type FeedPostRecord = {
   timestamp: string;
   location: string | null;
   author: FeedUserRecord;
-  workoutType: string;
+  workouts: FeedWorkoutRecord[];
   comments: FeedCommentRecord[];
   likes: FeedLikeRecord[];
-  exercises: FeedExerciseRecord[];
+  images: FeedImageRecord[] | null;
+};
+
+export type FeedImageRecord = {
+  id: number;
+  objectPath: string; // Path or URL to the image
 };
 
 export type ProfileRecord = {
@@ -48,4 +60,20 @@ export type ProfileRecord = {
   username: string;
   posts: FeedPostRecord[];
   followers: FeedUserRecord[];
+};
+
+export type Exercise = {
+  name: string;
+  sets?: number;
+  reps?: number;
+  weight?: number;
+  distance?: number;
+  duration?: number;
+  pace?: number;
+};
+
+export type Workout = {
+  type: string;
+  subtype?: string;
+  exercises: Exercise[];
 };

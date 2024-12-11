@@ -1,8 +1,16 @@
 import { useUsername } from "@/shared/hooks/useLocalStorage";
 import { FeedCommentRecord } from "@/types/feed";
 import { DeleteOutlined, MessageTwoTone } from "@ant-design/icons";
-import { Spin, Tooltip } from "antd";
-import { Avatar, Button, Input, List, Modal, Typography } from "antd";
+import {
+  Spin,
+  Tooltip,
+  Avatar,
+  Button,
+  Input,
+  List,
+  Modal,
+  Typography,
+} from "antd";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -62,7 +70,9 @@ export default function CommentButton({
 
   const showModal = () => {
     setIsModalOpen(true);
+    console.log(comments);
   };
+
   const onCancel = () => {
     setIsModalOpen(false);
   };
@@ -93,11 +103,6 @@ export default function CommentButton({
         closable={true}
         open={isModalOpen}
         onCancel={onCancel}
-        bodyStyle={{
-          maxHeight: "70vh",
-          overflowY: "auto",
-          padding: "15px",
-        }}
         style={{
           borderRadius: "8px",
           overflow: "hidden",
@@ -125,22 +130,30 @@ export default function CommentButton({
                       fontWeight: "bold",
                     }}
                   >
-                    {comment.author.username[0]?.toUpperCase()}
+                    {comment.author?.username
+                      ? comment.author?.username?.[0]?.toUpperCase()
+                      : "?"}
                   </Avatar>
                 }
                 title={
-                  <Typography.Text
-                    style={{
-                      cursor: "pointer",
-                      fontWeight: "bold",
-                      color: "black",
-                    }}
-                    onClick={() =>
-                      router.push(`/profile/${comment.author.username}`)
-                    }
-                  >
-                    @{comment.author.username}
-                  </Typography.Text>
+                  comment.author?.username ? (
+                    <Typography.Text
+                      style={{
+                        cursor: "pointer",
+                        fontWeight: "bold",
+                        color: "black",
+                      }}
+                      onClick={() =>
+                        router.push(`/profile/${comment.author.username}`)
+                      }
+                    >
+                      @{comment.author.username}
+                    </Typography.Text>
+                  ) : (
+                    <Typography.Text type="secondary">
+                      Unknown User
+                    </Typography.Text>
+                  )
                 }
                 description={
                   <div
@@ -197,7 +210,7 @@ export default function CommentButton({
                       </div>
 
                       {/* Delete Button */}
-                      {loggedUsername === comment.author.username && (
+                      {loggedUsername === comment.author?.username && (
                         <DeleteOutlined
                           onClick={() =>
                             deleteComment({ commentId: comment.id })

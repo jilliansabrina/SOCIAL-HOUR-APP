@@ -68,11 +68,6 @@ export default function () {
       icon: <MobileTwoTone twoToneColor="#85182a" />,
     },
     {
-      label: "Notifications",
-      key: "notifications",
-      icon: <FireTwoTone twoToneColor={"#85182a"} />,
-    },
-    {
       label: "Analytics",
       key: "analytics",
       icon: <LineChartOutlined style={{ color: "#85182a" }} />,

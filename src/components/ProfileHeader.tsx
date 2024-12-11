@@ -1,9 +1,13 @@
-import { Avatar, Button, List, Modal } from "antd";
-import { followUser, unfollowUser, fetchUser } from "@/shared/datasource";
-import { useQuery, useMutation } from "react-query";
+import { Avatar, Button, List, Modal, Typography, Spin } from "antd";
 import { useState, useEffect } from "react";
-import { fetchFollowing, fetchFollowers } from "@/shared/datasource";
-import { Spin } from "antd";
+import {
+  fetchUser,
+  followUser,
+  unfollowUser,
+  fetchFollowing,
+  fetchFollowers,
+} from "@/shared/datasource";
+import { useQuery, useMutation } from "react-query";
 import { useRouter } from "next/router";
 
 interface ProfileHeaderProps {
@@ -22,7 +26,6 @@ export default function ProfileHeader({
 
   const router = useRouter();
 
-  // Close modals when the profile changes
   useEffect(() => {
     setIsFollowersModalOpen(false);
     setIsFollowingModalOpen(false);
@@ -66,7 +69,6 @@ export default function ProfileHeader({
     }
   };
 
-  // Fetch following list
   const refreshFollowing = async () => {
     try {
       const response = await fetchFollowing(username);
@@ -77,12 +79,12 @@ export default function ProfileHeader({
   };
 
   const openFollowersModal = async () => {
-    await refreshFollowers(); // Ensure the followers list is up-to-date
+    await refreshFollowers();
     setIsFollowersModalOpen(true);
   };
 
   const openFollowingModal = async () => {
-    await refreshFollowing(); // Ensure the following list is up-to-date
+    await refreshFollowing();
     setIsFollowingModalOpen(true);
   };
 
@@ -92,41 +94,94 @@ export default function ProfileHeader({
   const isFollowing = Boolean(profileData?.followers.length ?? 0 > 0);
 
   return (
-    <div>
-      <Avatar style={{ backgroundColor: "#85182a", color: "black" }}>
+    <div
+      style={{
+        backgroundColor: "#f9f9f9",
+        padding: "20px",
+        borderRadius: "10px",
+        textAlign: "center",
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      {/* Avatar */}
+      <Avatar
+        size={80}
+        style={{
+          backgroundColor: "#85182a",
+          color: "white",
+          marginBottom: "10px",
+        }}
+      >
         {(username ?? " ")[0]?.toUpperCase()}
       </Avatar>
-      <h1>{`@${username}`}</h1>
+
+      {/* Username */}
+      <Typography.Title level={3} style={{ marginBottom: "5px" }}>
+        @{username}
+      </Typography.Title>
 
       {isLoading ? (
         <Spin size="large" />
       ) : (
-        <div style={{ marginTop: "10px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "20px",
+            marginTop: "10px",
+          }}
+        >
           <Button type="link" onClick={openFollowersModal}>
-            {followers.length || 0} Followers
+            <Typography.Text strong>{followers.length || 0}</Typography.Text>{" "}
+            Followers
           </Button>
           <Button type="link" onClick={openFollowingModal}>
-            {following.length || 0} Following
+            <Typography.Text strong>{following.length || 0}</Typography.Text>{" "}
+            Following
           </Button>
         </div>
       )}
 
-      {username === loggedUser ? (
-        <Button>Edit Profile</Button>
-      ) : isFollowing ? (
-        <Button onClick={() => unfollowUserMutation()} loading={isLoading}>
-          Unfollow
-        </Button>
-      ) : (
-        <Button onClick={() => followUserMutation()} loading={isLoading}>
-          Follow
-        </Button>
-      )}
-      {/* Followers Modal */}
+      {/* Follow/Unfollow Button */}
+      <div style={{ marginTop: "10px" }}>
+        {username === loggedUser ? (
+          <Button
+            style={{
+              borderRadius: "20px",
+              backgroundColor: "#85182a",
+              color: "white",
+            }}
+          >
+            Edit Profile
+          </Button>
+        ) : isFollowing ? (
+          <Button
+            style={{ borderRadius: "20px" }}
+            onClick={() => unfollowUserMutation()}
+            loading={isLoading}
+          >
+            Unfollow
+          </Button>
+        ) : (
+          <Button
+            style={{
+              borderRadius: "20px",
+              backgroundColor: "#85182a",
+              color: "white",
+            }}
+            onClick={() => followUserMutation()}
+            loading={isLoading}
+          >
+            Follow
+          </Button>
+        )}
+      </div>
+
+      {/* Modals */}
       <Modal
         title="Followers"
         open={isFollowersModalOpen}
-        closable={true}
+        closable
         onCancel={() => setIsFollowersModalOpen(false)}
         footer={null}
       >
@@ -160,11 +215,10 @@ export default function ProfileHeader({
         )}
       </Modal>
 
-      {/* Following Modal */}
       <Modal
         title="Following"
-        closable={true}
         open={isFollowingModalOpen}
+        closable
         onCancel={() => setIsFollowingModalOpen(false)}
         footer={null}
       >

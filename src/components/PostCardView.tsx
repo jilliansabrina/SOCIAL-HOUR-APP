@@ -1,10 +1,13 @@
 import { FeedExerciseRecord, FeedPostRecord } from "@/types/feed";
-import { Avatar, Card, Table, Tooltip, Typography, Button } from "antd";
+import { Card } from "antd";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useRouter } from "next/router";
-import LikeButton from "./LikeButton";
-import CommentButton from "./CommentButton";
+import PostImages from "./PostImages";
+import PostHeader from "./PostHeader";
+import PostContent from "./PostContent";
+import PostWorkouts from "./PostWorkouts";
+import PostButtons from "./PostButtons";
 
 dayjs.extend(advancedFormat);
 
@@ -17,18 +20,17 @@ export default function PostCardView({ post, refetch }: Props) {
   const now = dayjs();
   const date = dayjs(post.timestamp);
   const diff = now.diff(date, "day");
-  const router = useRouter();
 
   const handleDelete = () => {
     console.log("Delete post:", post.id); // Replace with actual delete logic
   };
 
-  // All possible columns
+  // Define exercise columns
   const exerciseColumns = [
     {
-      title: "Exercise",
-      dataIndex: "subcategory",
-      key: "subcategory",
+      title: "Exercise Name",
+      dataIndex: "name",
+      key: "name",
       render: (text: string) => <strong>{text || "N/A"}</strong>,
     },
     {
@@ -75,152 +77,52 @@ export default function PostCardView({ post, refetch }: Props) {
     },
   ];
 
-  // Filter out columns where all values in the data are null
-  const filteredColumns = exerciseColumns.filter(
-    (column) =>
-      post.exercises &&
-      Array.isArray(post.exercises) &&
-      post.exercises.some((exercise) => {
-        const field = column.dataIndex as keyof FeedExerciseRecord;
-        return exercise[field] !== null && exercise[field] !== undefined;
-      })
-  );
+  // Filter columns where all values are "N/A"
+  const filterColumns = (columns: any[], data: FeedExerciseRecord[]) => {
+    return columns.filter((column) => {
+      const allValuesAreNA = data.every(
+        (record) => column.render(record[column.dataIndex]) === "N/A"
+      );
+      return !allValuesAreNA;
+    });
+  };
 
   return (
     <Card
       style={{
         marginBottom: "20px",
-        border: "1px solid #d9d9d9", // Light gray border for separation
-        borderRadius: "8px", // Rounded corners
+        border: "1px solid #d9d9d9",
+        borderRadius: "8px",
         overflow: "hidden",
-        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Subtle shadow for depth
-        backgroundColor: "#ffffff", // Ensure posts have a distinct white background
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+        backgroundColor: "#ffffff",
       }}
     >
-      {/* Author Section */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          padding: "10px",
-          backgroundColor: "#f0f2f5",
-          borderBottom: "1px solid #e8e8e8",
-        }}
-      >
-        <Avatar
-          style={{
-            backgroundColor: "#85182a",
-            color: "white",
-            marginRight: "10px",
-          }}
-        >
-          {post.author.username[0]?.toUpperCase()}
-        </Avatar>
-        <div>
-          <Typography.Text
-            style={{
-              fontWeight: "bold",
-              cursor: "pointer",
-              display: "block",
-            }}
-            onClick={() => router.push(`profile/${post.author.username}`)}
-          >
-            @{post.author.username}
-          </Typography.Text>
-          <Tooltip title={date.format("ddd MMM Do YYYY h:mm A")}>
-            <Typography.Text type="secondary">
-              {`Posted ${
-                diff === 0
-                  ? "today"
-                  : diff === 1
-                  ? "yesterday"
-                  : `${diff} days ago`
-              }`}
-            </Typography.Text>
-          </Tooltip>
-        </div>
-      </div>
+      {/* Post Header */}
+      <PostHeader
+        author={post.author}
+        location={post.location}
+        date={date}
+        diff={diff}
+      />
 
-      {/* Workout Type */}
-      <div
-        style={{
-          backgroundColor: "#fafafa",
-          padding: "10px",
-          textAlign: "center",
-        }}
-      >
-        <Typography.Text strong style={{ fontSize: "16px" }}>
-          {post.workoutType || "Workout"}
-        </Typography.Text>
-      </div>
+      <PostWorkouts
+        workouts={post.workouts}
+        filterColumns={filterColumns}
+        exerciseColumns={exerciseColumns}
+      />
 
-      {/* Exercises Table */}
-      {post.exercises && post.exercises.length > 0 && (
-        <div style={{ padding: "15px" }}>
-          <Table
-            dataSource={post.exercises}
-            columns={filteredColumns}
-            rowKey="id" // Ensure a unique key for each row
-            pagination={false} // Disable pagination for simplicity
-            bordered
-          />
-        </div>
-      )}
+      <PostImages images={post.images} />
 
-      {/* Content Bubble */}
-      {post.content && (
-        <div
-          style={{
-            padding: "15px",
-            backgroundColor: "#f6f8fa",
-            margin: "15px",
-            borderRadius: "10px",
-            border: "1px solid #e8e8e8",
-          }}
-        >
-          <Typography.Text style={{ fontStyle: "italic" }}>
-            {post.content}
-          </Typography.Text>
-        </div>
-      )}
+      <PostContent content={post.content} />
 
-      {/* Actions: Like, Comment */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "15px",
-          borderTop: "1px solid #e8e8e8",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <CommentButton
-            comments={post.comments}
-            postId={post.id}
-            refetchPost={refetch}
-          />
-          <LikeButton postId={post.id} />
-        </div>
-        <Tooltip title={date.format("ddd MMM Do YYYY h:mm A")}>
-          <Typography.Text type="secondary">
-            {diff === 0 ? "today" : `${diff} days ago`}
-          </Typography.Text>
-        </Tooltip>
-      </div>
-
-      {/* Delete Button */}
-      <div
-        style={{
-          textAlign: "right",
-          padding: "10px 15px",
-          borderTop: "1px solid #e8e8e8",
-        }}
-      >
-        <Button danger onClick={handleDelete}>
-          Delete
-        </Button>
-      </div>
+      {/* Post Buttons */}
+      <PostButtons
+        postId={post.id}
+        comments={post.comments}
+        refetchPost={refetch}
+        author={post.author.username}
+      />
     </Card>
   );
 }

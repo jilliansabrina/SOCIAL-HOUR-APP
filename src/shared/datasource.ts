@@ -14,15 +14,12 @@ function generateHeaders() {
 export async function fetchCreateUser(
   email: string,
   username: string,
-  password: string,
-  height?: number,
-  weight?: number,
-  bodyFat?: number
+  password: string
 ) {
   return await apiCall({
     method: HttpMethod.POST,
     path: "/api/users",
-    body: { email, username, password, height, weight, bodyFat },
+    body: { email, username, password },
   });
 }
 
@@ -136,17 +133,20 @@ export async function fetchFollowing(username: string) {
 }
 
 export async function createPostMutation(
-  workoutType: string,
   content: string,
   location?: string,
-  exercises?: Array<{
-    subcategory?: string;
-    sets?: number;
-    reps?: number;
-    weight?: number;
-    distance?: number;
-    duration?: number;
-    pace?: number;
+  workouts?: Array<{
+    type: string;
+    subtype?: string;
+    exercises: Array<{
+      name: string;
+      sets?: number;
+      reps?: number;
+      weight?: number;
+      distance?: number;
+      duration?: number;
+      pace?: number;
+    }>;
   }>
 ) {
   const username = forceLoadUsername();
@@ -155,10 +155,9 @@ export async function createPostMutation(
     path: "/api/posts",
     body: {
       username,
-      workoutType,
       content,
       location,
-      exercises,
+      workouts,
     },
   });
 }
@@ -177,6 +176,13 @@ export async function addCommentMutation(
       authorId,
       content,
     },
+  });
+}
+
+export async function deletePostMutation(postId: number) {
+  return await apiCall({
+    method: HttpMethod.DELETE,
+    path: `/api/posts/${postId}`,
   });
 }
 
