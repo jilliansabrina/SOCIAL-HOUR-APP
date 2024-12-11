@@ -214,7 +214,7 @@ export default function ProfileHeader({
             }}
             onClick={() => setIsEditProfileModalOpen(true)} // Open the edit modal
           >
-            Edit Profile
+            Change Username
           </Button>
         ) : isFollowing ? (
           <Button
@@ -314,9 +314,9 @@ export default function ProfileHeader({
         )}
       </Modal>
 
-      {/* Edit Profile Modal */}
+      {/* Change Username Modal */}
       <Modal
-        title="Edit Profile"
+        title="Change Username"
         open={isEditProfileModalOpen}
         closable
         onCancel={() => setIsEditProfileModalOpen(false)}
