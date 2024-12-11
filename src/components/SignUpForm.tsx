@@ -1,7 +1,14 @@
 import { fetchCreateUser } from "@/shared/datasource";
-import { Button, Form, FormProps, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, Typography } from "antd";
 import { useRouter } from "next/router";
 import { useMutation } from "react-query";
+import { Montserrat } from "next/font/google";
+
+// Import Montserrat font
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["500"],
+});
 
 type FieldType = {
   email: string;
@@ -24,9 +31,9 @@ export default function SignUpForm({ isModalOpen, setIsModalOpen }: Props) {
   });
 
   const router = useRouter();
+
   return (
     <Modal
-      title="Create account"
       open={isModalOpen}
       onCancel={() => setIsModalOpen(false)}
       width={500}
@@ -35,9 +42,14 @@ export default function SignUpForm({ isModalOpen, setIsModalOpen }: Props) {
     >
       <Form
         name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
+        style={{
+          maxWidth: 400,
+          margin: "0 auto",
+          padding: "20px",
+          borderRadius: "8px",
+          backgroundColor: "#f9f9f9",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+        }}
         initialValues={{ remember: true }}
         onFinish={(val) => {
           createUser({
@@ -53,31 +65,80 @@ export default function SignUpForm({ isModalOpen, setIsModalOpen }: Props) {
         layout="vertical"
       >
         <Form.Item<FieldType>
-          label="Username"
+          label={
+            <Typography.Text
+              style={{ fontWeight: 600 }}
+              className={montserrat.className}
+            >
+              Username
+            </Typography.Text>
+          }
           name="username"
           rules={[{ required: true, message: "Please input your username." }]}
         >
-          <Input style={{ fontSize: "1em", padding: "8px" }} />
+          <Input
+            className={montserrat.className}
+            style={{
+              fontSize: "1em",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          />
         </Form.Item>
 
         <Form.Item<FieldType>
-          label="Email"
+          label={
+            <Typography.Text
+              style={{ fontWeight: 600 }}
+              className={montserrat.className}
+            >
+              Email
+            </Typography.Text>
+          }
           name="email"
           rules={[{ required: true, message: "Please input your email." }]}
         >
-          <Input style={{ fontSize: "1em", padding: "8px" }} />
+          <Input
+            className={montserrat.className}
+            style={{
+              fontSize: "1em",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          />
         </Form.Item>
 
         <Form.Item<FieldType>
-          label="Password"
+          label={
+            <Typography.Text
+              style={{ fontWeight: 600 }}
+              className={montserrat.className}
+            >
+              Password
+            </Typography.Text>
+          }
           name="password"
           rules={[{ required: true, message: "Please input your password." }]}
         >
-          <Input.Password style={{ fontSize: "1em", padding: "8px" }} />
+          <Input.Password
+            className={montserrat.className}
+            style={{
+              fontSize: "1em",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          />
         </Form.Item>
 
-        <Form.Item
-          label="Confirm password"
+        <Form.Item<FieldType>
+          label={
+            <Typography.Text
+              style={{ fontWeight: 600 }}
+              className={montserrat.className}
+            >
+              Confirm Password
+            </Typography.Text>
+          }
           name="confirmPassword"
           rules={[
             { required: true, message: "Please confirm your password." },
@@ -91,16 +152,33 @@ export default function SignUpForm({ isModalOpen, setIsModalOpen }: Props) {
             }),
           ]}
         >
-          <Input.Password style={{ fontSize: "1em", padding: "8px" }} />
+          <Input.Password
+            className={montserrat.className}
+            style={{
+              fontSize: "1em",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          />
         </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+        <Form.Item>
           <Button
+            className={montserrat.className}
             type="primary"
             htmlType="submit"
-            style={{ fontSize: "1.1em", padding: "8px 16px" }}
+            block
+            style={{
+              backgroundColor: "#85182a",
+              borderColor: "#85182a",
+              color: "white",
+              fontSize: "1.1em",
+              fontWeight: "bold",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
           >
-            Submit
+            CREATE ACCOUNT
           </Button>
         </Form.Item>
       </Form>

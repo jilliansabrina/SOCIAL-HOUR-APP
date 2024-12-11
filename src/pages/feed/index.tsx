@@ -3,7 +3,13 @@ import Navigation from "@/components/Navigation";
 import PostCardView from "@/components/PostCardView";
 import { getFeed } from "@/shared/datasource";
 import { Space } from "antd";
+import { Montserrat } from "next/font/google";
 import { useQuery } from "react-query";
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["500"], // Adjust weight for the title
+});
 
 export default function FeedPage() {
   const { data = [], refetch } = useQuery({
@@ -12,7 +18,10 @@ export default function FeedPage() {
   });
 
   return (
-    <div style={{ backgroundColor: "#f6f8fa", minHeight: "100vh" }}>
+    <div
+      style={{ backgroundColor: "#f6f8fa", minHeight: "100vh" }}
+      className={montserrat.className}
+    >
       <Navigation />
       <div
         style={{

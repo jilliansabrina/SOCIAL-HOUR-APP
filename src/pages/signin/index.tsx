@@ -33,18 +33,22 @@ export default function () {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          height: "100vh",
+          height: "75vh",
           textAlign: "center",
         }}
       >
         <h2 className={`${montserrat.className}`}>Sweat. Share. Succeed.</h2>
         <Button
+          className={montserrat.className}
+          size="large"
           style={{
-            width: "80%",
+            width: "40%",
             fontSize: "1.1em",
             fontWeight: "bold",
             marginBottom: "20px",
             padding: "10px 0",
+            backgroundColor: "#85182a",
+            color: "white",
           }}
           shape="round"
           onClick={() => setIsAccountCreateModalOpen(true)}
@@ -53,8 +57,10 @@ export default function () {
         </Button>
 
         <Button
+          className={montserrat.className}
+          size="large"
           style={{
-            width: "80%",
+            width: "40%",
             fontSize: "1.1em",
             fontWeight: "bold",
             padding: "10px 0",

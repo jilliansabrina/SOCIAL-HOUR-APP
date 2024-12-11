@@ -19,7 +19,6 @@ import {
 } from "@/shared/datasource";
 import { useQuery, useMutation } from "react-query";
 import { useRouter } from "next/router";
-import { FeedUserRecord } from "@/types/feed";
 
 interface ProfileHeaderProps {
   username: string;
@@ -34,7 +33,7 @@ export default function ProfileHeader({
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const [followers, setFollowers] = useState<string[]>([]);
   const [following, setFollowing] = useState<string[]>([]);
-  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false); // New modal state
+  const [isChangeUsernameOpen, setIsChangeUsernameOpen] = useState(false); // New modal state
   const [newUsername, setNewUsername] = useState("");
 
   const router = useRouter();
@@ -42,7 +41,7 @@ export default function ProfileHeader({
   useEffect(() => {
     setIsFollowersModalOpen(false);
     setIsFollowingModalOpen(false);
-    setIsEditProfileModalOpen(false);
+    setIsChangeUsernameOpen(false);
   }, [username]);
 
   const {
@@ -117,7 +116,7 @@ export default function ProfileHeader({
               "An error occurred while processing your request. Please try again."
             );
           } finally {
-            setIsEditProfileModalOpen(false); // Close the modal
+            setIsChangeUsernameOpen(false); // Close the modal
           }
         },
         onError: (error: any) => {
@@ -212,7 +211,7 @@ export default function ProfileHeader({
               backgroundColor: "#85182a",
               color: "white",
             }}
-            onClick={() => setIsEditProfileModalOpen(true)} // Open the edit modal
+            onClick={() => setIsChangeUsernameOpen(true)}
           >
             Change Username
           </Button>
@@ -316,12 +315,19 @@ export default function ProfileHeader({
 
       {/* Change Username Modal */}
       <Modal
-        title="Change Username"
-        open={isEditProfileModalOpen}
+        title={
+          <Typography.Title
+            level={4}
+            style={{ textAlign: "center", margin: 0 }}
+          >
+            Change Username
+          </Typography.Title>
+        }
+        open={isChangeUsernameOpen}
         closable
-        onCancel={() => setIsEditProfileModalOpen(false)}
+        onCancel={() => setIsChangeUsernameOpen(false)}
         footer={[
-          <Button key="cancel" onClick={() => setIsEditProfileModalOpen(false)}>
+          <Button key="cancel" onClick={() => setIsChangeUsernameOpen(false)}>
             Cancel
           </Button>,
           <Button

@@ -1,9 +1,16 @@
 import { fetchSignIn } from "@/shared/datasource";
 import { useUsername } from "@/shared/hooks/useLocalStorage";
-import { Button, Form, FormProps, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, Typography } from "antd";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useMutation } from "react-query";
+import { Montserrat } from "next/font/google";
+
+// Import Montserrat font
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["500"], // Adjust weight for the title
+});
 
 type FieldType = {
   username: string;
@@ -29,6 +36,8 @@ export default function SignInForm({ isModalOpen, setIsModalOpen }: Props) {
 
   const [username, setUsername] = useUsername();
 
+  const router = useRouter();
+
   useEffect(() => {
     if (data) {
       setIsModalOpen(false);
@@ -39,10 +48,8 @@ export default function SignInForm({ isModalOpen, setIsModalOpen }: Props) {
     }
   }, [data]);
 
-  const router = useRouter();
   return (
     <Modal
-      title="Sign In"
       open={isModalOpen}
       onCancel={() => setIsModalOpen(false)}
       width={500}
@@ -51,9 +58,14 @@ export default function SignInForm({ isModalOpen, setIsModalOpen }: Props) {
     >
       <Form
         name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
+        style={{
+          maxWidth: 400,
+          margin: "0 auto",
+          padding: "20px",
+          borderRadius: "8px",
+          backgroundColor: "#f9f9f9",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+        }}
         initialValues={{ remember: true }}
         onFinish={(val) => {
           signIn({
@@ -65,28 +77,65 @@ export default function SignInForm({ isModalOpen, setIsModalOpen }: Props) {
         layout="vertical"
       >
         <Form.Item<FieldType>
-          label="Username"
+          label={
+            <Typography.Text
+              style={{ fontWeight: 600 }}
+              className={`${montserrat.className}`}
+            >
+              Username
+            </Typography.Text>
+          }
           name="username"
           rules={[{ required: true, message: "Please input your username." }]}
         >
-          <Input style={{ fontSize: "1em", padding: "8px" }} />
+          <Input
+            className={`${montserrat.className}`}
+            style={{
+              fontSize: "1em",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          />
         </Form.Item>
 
         <Form.Item<FieldType>
-          label="Password"
+          label={
+            <Typography.Text
+              style={{ fontWeight: 600 }}
+              className={`${montserrat.className}`}
+            >
+              Password
+            </Typography.Text>
+          }
           name="password"
           rules={[{ required: true, message: "Please input your password." }]}
         >
-          <Input.Password style={{ fontSize: "1em", padding: "8px" }} />
+          <Input.Password
+            style={{
+              fontSize: "1em",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          />
         </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+        <Form.Item>
           <Button
             type="primary"
             htmlType="submit"
-            style={{ fontSize: "1.1em", padding: "8px 16px" }}
+            block
+            className={`${montserrat.className}`}
+            style={{
+              backgroundColor: "#85182a",
+              borderColor: "#85182a",
+              color: "white",
+              fontSize: "1.1em",
+              fontWeight: "bold",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
           >
-            Submit
+            SIGN IN
           </Button>
         </Form.Item>
       </Form>
