@@ -1,4 +1,13 @@
-import { Avatar, Button, List, Modal, Typography, Spin } from "antd";
+import {
+  Avatar,
+  Button,
+  List,
+  Modal,
+  Typography,
+  Spin,
+  message,
+  Input,
+} from "antd";
 import { useState, useEffect } from "react";
 import {
   fetchUser,
@@ -6,9 +15,11 @@ import {
   unfollowUser,
   fetchFollowing,
   fetchFollowers,
+  updateUsername,
 } from "@/shared/datasource";
 import { useQuery, useMutation } from "react-query";
 import { useRouter } from "next/router";
+import { FeedUserRecord } from "@/types/feed";
 
 interface ProfileHeaderProps {
   username: string;
@@ -23,12 +34,15 @@ export default function ProfileHeader({
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const [followers, setFollowers] = useState<string[]>([]);
   const [following, setFollowing] = useState<string[]>([]);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false); // New modal state
+  const [newUsername, setNewUsername] = useState(""); // State for new username
 
   const router = useRouter();
 
   useEffect(() => {
     setIsFollowersModalOpen(false);
     setIsFollowingModalOpen(false);
+    setIsEditProfileModalOpen(false);
   }, [username]);
 
   const {
@@ -38,7 +52,17 @@ export default function ProfileHeader({
   } = useQuery({
     queryKey: ["fetch-user", username],
     queryFn: () => fetchUser(username),
+    onSuccess: async () => {
+      await refreshFollowers();
+      await refreshFollowing();
+    },
   });
+
+  useEffect(() => {
+    if (profileData?.followers) {
+      setFollowers(profileData.followers.map((follower) => follower.username));
+    }
+  }, [profileData?.followers]);
 
   const { mutate: followUserMutation, isLoading: isFollowingLoading } =
     useMutation({
@@ -69,6 +93,25 @@ export default function ProfileHeader({
     }
   };
 
+  const { mutate: updateUsernameMutation, isLoading: isUpdatingUsername } =
+    useMutation(
+      (newUsername: string) => updateUsername(username, newUsername), // Call the API
+      {
+        onSuccess: async () => {
+          message.success("Username updated successfully!");
+          setIsEditProfileModalOpen(false); // Close the modal
+          await refetch(); // Refetch the profile to reflect changes
+          router.push(`/profile/${newUsername}`); // Redirect to the new username profile
+        },
+        onError: (error: any) => {
+          message.error(
+            error.response?.data?.error ||
+              "Failed to update the username. Please try again."
+          );
+        },
+      }
+    );
+
   const refreshFollowing = async () => {
     try {
       const response = await fetchFollowing(username);
@@ -91,7 +134,7 @@ export default function ProfileHeader({
   const isLoading =
     isFetchingProfile || isFollowingLoading || isUnfollowingLoading;
 
-  const isFollowing = Boolean(profileData?.followers.length ?? 0 > 0);
+  const isFollowing = followers.includes(loggedUser);
 
   return (
     <div
@@ -151,6 +194,7 @@ export default function ProfileHeader({
               backgroundColor: "#85182a",
               color: "white",
             }}
+            onClick={() => setIsEditProfileModalOpen(true)} // Open the edit modal
           >
             Edit Profile
           </Button>
@@ -250,6 +294,34 @@ export default function ProfileHeader({
         ) : (
           <Spin size="large" />
         )}
+      </Modal>
+
+      {/* Edit Profile Modal */}
+      <Modal
+        title="Edit Profile"
+        open={isEditProfileModalOpen}
+        closable
+        onCancel={() => setIsEditProfileModalOpen(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsEditProfileModalOpen(false)}>
+            Cancel
+          </Button>,
+          <Button
+            key="save"
+            type="primary"
+            onClick={() => updateUsernameMutation(newUsername)}
+            loading={isUpdatingUsername}
+            disabled={!newUsername.trim()} // Disable if input is empty
+          >
+            Save Changes
+          </Button>,
+        ]}
+      >
+        <Input
+          placeholder="Enter new username"
+          value={newUsername}
+          onChange={(e) => setNewUsername(e.target.value)}
+        />
       </Modal>
     </div>
   );

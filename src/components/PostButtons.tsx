@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, message } from "antd";
+import React, { useState } from "react";
+import { Button, message, Modal } from "antd";
 import CommentButton from "./CommentButton";
 import LikeButton from "./LikeButton";
 import { useMutation, useQueryClient } from "react-query";
@@ -21,6 +21,7 @@ const PostButtons: React.FC<PostButtonsProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const [loggedUsername] = useUsername();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { mutate: deletePost, isLoading } = useMutation(
     () => deletePostMutation(postId),
@@ -36,9 +37,16 @@ const PostButtons: React.FC<PostButtonsProps> = ({
       },
     }
   );
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
 
-  const handleDelete = () => {
-    deletePost();
+  const handleOk = () => {
+    deletePost(); // Trigger post deletion
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false); // Close the modal without deleting
   };
 
   return (
@@ -73,7 +81,7 @@ const PostButtons: React.FC<PostButtonsProps> = ({
           }}
         >
           <Button
-            onClick={handleDelete}
+            onClick={showModal}
             style={{
               color: "#85182a",
               backgroundColor: "white",
@@ -84,6 +92,21 @@ const PostButtons: React.FC<PostButtonsProps> = ({
           </Button>
         </div>
       )}
+      <Modal
+        title="Confirm Delete"
+        open={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        confirmLoading={isLoading} // Show loading spinner on the OK button
+        okText="Delete"
+        okButtonProps={{ style: { backgroundColor: "#85182a" } }}
+        cancelText="Cancel"
+      >
+        <p>
+          Are you sure you want to delete this post? This action cannot be
+          undone.
+        </p>
+      </Modal>
     </>
   );
 };

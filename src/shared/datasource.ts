@@ -192,3 +192,20 @@ export async function deleteCommentMutation(commentId: number) {
     path: `/api/comments/${commentId}`,
   });
 }
+
+export async function updateUsername(
+  currentUsername: string,
+  newUsername: string
+) {
+  return await apiCall({
+    method: HttpMethod.PATCH,
+    path: `/api/users/${currentUsername}`,
+    body: {
+      newUsername,
+    },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: currentUsername,
+    },
+  });
+}

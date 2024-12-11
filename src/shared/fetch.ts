@@ -2,6 +2,7 @@ export enum HttpMethod {
   GET = "GET",
   POST = "POST",
   DELETE = "DELETE",
+  PATCH = "PATCH",
 }
 
 type HttpRequestPayload<E = any> = {

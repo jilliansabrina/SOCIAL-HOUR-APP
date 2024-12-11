@@ -32,7 +32,9 @@ export default function SignInForm({ isModalOpen, setIsModalOpen }: Props) {
   useEffect(() => {
     if (data) {
       setIsModalOpen(false);
-      setUsername(data.data.user.username);
+      if (typeof setUsername === "function" && data?.data?.user?.username) {
+        setUsername(data.data.user.username);
+      }
       router.push("/feed");
     }
   }, [data]);
