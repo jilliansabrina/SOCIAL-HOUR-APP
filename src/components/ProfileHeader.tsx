@@ -35,8 +35,7 @@ export default function ProfileHeader({
   const [followers, setFollowers] = useState<string[]>([]);
   const [following, setFollowing] = useState<string[]>([]);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false); // New modal state
-  const [newUsername, setNewUsername] = useState(""); // State for new username
-  const [loading, setLoading] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
 
   const router = useRouter();
 
@@ -99,28 +98,25 @@ export default function ProfileHeader({
       (newUsername: string) => updateUsername(username, newUsername), // API call
       {
         onSuccess: async () => {
-          setLoading(true); // Set loading to true
           message.success("Username updated successfully!");
 
           try {
             // Wait for all asynchronous operations to complete
             await Promise.all([
               new Promise((resolve) => {
-                window.localStorage.setItem("username", newUsername);
+                window.localStorage.removeItem("username"); // Clear username from local storage
                 resolve(null); // Resolve immediately as localStorage is synchronous
               }),
-              refetch(), // Refetch the profile data
             ]);
 
-            // After all updates, redirect to the new profile
-            router.push(`/profile/${newUsername}`);
+            // Log out and redirect to signin page
+            router.push("/signin");
           } catch (error) {
             console.error("Error completing all operations:", error);
             message.error(
-              "An error occurred while updating your profile. Please try again."
+              "An error occurred while processing your request. Please try again."
             );
           } finally {
-            setLoading(false); // Set loading to false
             setIsEditProfileModalOpen(false); // Close the modal
           }
         },
@@ -158,18 +154,7 @@ export default function ProfileHeader({
 
   const isFollowing = followers.includes(loggedUser);
 
-  return loading ? (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh", // Full height for centering
-      }}
-    >
-      <Spin size="large" tip="Loading profile..." />
-    </div>
-  ) : (
+  return (
     <div
       style={{
         backgroundColor: "#f9f9f9",
@@ -351,7 +336,7 @@ export default function ProfileHeader({
         ]}
       >
         <Input
-          placeholder="Enter new username"
+          placeholder="Enter new username. Warning: You will be logged out."
           value={newUsername}
           onChange={(e) => setNewUsername(e.target.value)}
         />
