@@ -5,6 +5,7 @@ import Navigation from "@/components/Navigation";
 import { fetchUserPostsByYear } from "@/shared/datasource";
 import { useUsername } from "@/shared/hooks/useLocalStorage";
 import HeatmapYear from "@/components/HeatmapYear";
+import WorkoutStats from "@/components/WorkoutStats";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -129,42 +130,7 @@ export default function Analytics() {
 
         <div style={{ width: "50%" }}>
           <Divider />
-          <h2
-            className={`${montserrat.className}`}
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            Sessions
-          </h2>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Progress
-              type="circle"
-              percent={100}
-              status="active"
-              strokeColor={"#85182a"}
-              format={() => "10:30"}
-            />
-            <Progress
-              type="circle"
-              percent={100}
-              status="active"
-              strokeColor={"#85182a"}
-              format={() => "3 Cardio"}
-            />
-            <Progress
-              type="circle"
-              percent={100}
-              status="active"
-              strokeColor={"#85182a"}
-              format={() => "1 Swim"}
-            />
-            <Progress
-              type="circle"
-              percent={100}
-              status="active"
-              strokeColor={"#85182a"}
-              format={() => "4 Lifts"}
-            />
-          </div>
+          <WorkoutStats username={username} />
         </div>
       </div>
     </div>

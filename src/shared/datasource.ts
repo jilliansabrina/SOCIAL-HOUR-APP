@@ -227,8 +227,6 @@ export async function fetchUserPostsByYear(username: string, year: number) {
   if (!username || !year) {
     throw new Error("Username and year are required.");
   }
-
-  // Call the API with the appropriate parameters
   const data = await apiCall<Array<{ date: string; count: number }>>({
     method: HttpMethod.GET,
     path: `/api/users/${username}/posts?year=${year}`, // Pass the year as a query parameter
@@ -237,3 +235,41 @@ export async function fetchUserPostsByYear(username: string, year: number) {
 
   return data; // Return the fetched data
 }
+
+export async function fetchWorkoutStats(username: string) {
+  const data = await apiCall<
+    Array<{ type: string; subtype: string; count: number }>
+  >({
+    method: HttpMethod.GET,
+    path: `/api/users/${username}/workout-stats`,
+    headers: generateHeaders(),
+  });
+
+  return data;
+}
+
+const processWorkoutStats = (
+  stats: Array<{ type: string; subtype: string; count: number }>
+) => {
+  const groupedData: { [type: string]: { [subtype: string]: number } } = {};
+
+  stats.forEach(({ type, subtype, count }) => {
+    if (!groupedData[type]) {
+      groupedData[type] = {};
+    }
+    groupedData[type][subtype] = count;
+  });
+
+  const chartData: Array<{ type: string; subtype: string; count: number }> = [];
+  for (const type in groupedData) {
+    for (const subtype in groupedData[type]) {
+      chartData.push({
+        type,
+        subtype,
+        count: groupedData[type][subtype],
+      });
+    }
+  }
+
+  return chartData;
+};
