@@ -147,18 +147,30 @@ export async function createPostMutation(
       duration?: number;
       pace?: number;
     }>;
-  }>
+  }>,
+  images?: File[] // Include images for the post
 ) {
   const username = forceLoadUsername();
+
+  // Create FormData object
+  const formData = new FormData();
+  if (username) formData.append("username", username); // Include username in the form data
+  formData.append("content", content);
+  if (location) formData.append("location", location);
+  formData.append("workouts", JSON.stringify(workouts));
+  if (images && images.length > 0) {
+    images.forEach((image) => {
+      formData.append("images", image);
+    });
+  }
+
+  console.log("Creating post with data:", formData);
+
+  // Use `apiCall` or fetch directly
   return await apiCall({
     method: HttpMethod.POST,
     path: "/api/posts",
-    body: {
-      username,
-      content,
-      location,
-      workouts,
-    },
+    body: formData,
   });
 }
 
