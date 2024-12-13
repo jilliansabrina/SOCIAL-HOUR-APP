@@ -37,58 +37,6 @@ export default function () {
         <h2 className="header-title" style={{ color: "white" }}>
           SOCIAL HOUR
         </h2>
-        {Boolean(userId) ? (
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            <Avatar
-              style={{ backgroundColor: "#85182a" }}
-              icon={<UserOutlined />}
-            />
-            <Button
-              variant="solid"
-              style={{
-                backgroundColor: "#85182a",
-                color: "white",
-                borderColor: "#85182a",
-              }}
-              onClick={() => {
-                localStorage.removeItem("username");
-                router.push("/signin");
-              }}
-            >
-              Sign Out
-            </Button>
-          </div>
-        ) : (
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            <Button
-              variant="solid"
-              style={{
-                backgroundColor: "#85182a",
-                color: "white",
-                borderColor: "#85182a",
-              }}
-              // onClick={signInPage}
-            >
-              Sign In
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );

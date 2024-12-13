@@ -14,15 +14,14 @@ interface WorkoutStat {
   count: number;
 }
 
-export default function WorkoutsStats({ username }: { username: string }) {
+export default function WorkoutStats({ username }: { username: string }) {
   const [data, setData] = useState<WorkoutStat[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadStats = async () => {
       if (!username) {
-        message.error("Username is required to load workout stats.");
-        return;
+        return; // Do not attempt to fetch data if username is unavailable
       }
 
       try {
@@ -65,8 +64,8 @@ export default function WorkoutsStats({ username }: { username: string }) {
             <div
               style={{
                 padding: "8px",
-                textAlign: "center", // Center-align text in the first column
-                fontWeight: "bold", // Bold font for Exercise Type
+                textAlign: "center",
+                fontWeight: "bold",
               }}
             >
               {value}
@@ -96,7 +95,7 @@ export default function WorkoutsStats({ username }: { username: string }) {
             <div
               style={{
                 padding: "8px",
-                textAlign: "center", // Center-align text in this column
+                textAlign: "center",
               }}
             >
               {index === firstOccurrenceIndex
@@ -118,7 +117,7 @@ export default function WorkoutsStats({ username }: { username: string }) {
         <div
           style={{
             padding: "8px",
-            textAlign: "left", // Keep subtypes left-aligned
+            textAlign: "left",
           }}
         >
           {value || "None"}
@@ -133,7 +132,7 @@ export default function WorkoutsStats({ username }: { username: string }) {
         <div
           style={{
             padding: "8px",
-            textAlign: "center", // Center-align count values
+            textAlign: "center",
           }}
         >
           {value} sessions
@@ -142,13 +141,28 @@ export default function WorkoutsStats({ username }: { username: string }) {
     },
   ];
 
+  if (!username) {
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          padding: "20px",
+          color: "#85182a",
+          fontWeight: "bold",
+        }}
+      >
+        Please log in to view your workout statistics.
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
         padding: "20px",
-        background: "#f6f8fa", // Match background to blend with other components
+        background: "#f6f8fa",
         borderRadius: "8px",
-        boxShadow: "0 3px 5px rgba(0, 0, 0, 0.1)", // Subtle shadow for depth
+        boxShadow: "0 3px 5px rgba(0, 0, 0, 0.1)",
       }}
       className={montserrat.className}
     >
@@ -156,7 +170,7 @@ export default function WorkoutsStats({ username }: { username: string }) {
         style={{
           textAlign: "center",
           fontWeight: "bold",
-          color: "#85182a", // Match the primary color
+          color: "#85182a",
           marginBottom: "20px",
         }}
       >
@@ -182,20 +196,20 @@ export default function WorkoutsStats({ username }: { username: string }) {
       />
       <style jsx global>{`
         .table-row-light {
-          background-color: #f4decd; /* Light color from heatmap scheme */
+          background-color: #f4decd;
         }
         .table-row-dark {
-          background-color: #e4b293; /* Slightly darker color */
+          background-color: #e4b293;
         }
         .ant-table-thead > tr > th {
-          background-color: #85182a !important; /* Title row background */
-          color: #fff !important; /* White text for contrast */
+          background-color: #85182a !important;
+          color: #fff !important;
           font-weight: bold;
-          text-align: center !important; /* Center-align title row */
-          text-transform: uppercase; /* All caps for title */
+          text-align: center !important;
+          text-transform: uppercase;
         }
         .ant-table-cell {
-          padding: 12px !important; /* Reduced padding for compression */
+          padding: 12px !important;
         }
       `}</style>
     </div>

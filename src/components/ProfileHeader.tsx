@@ -38,6 +38,11 @@ export default function ProfileHeader({
 
   const router = useRouter();
 
+  const handleSignOut = () => {
+    window.localStorage.removeItem("username");
+    router.push("/signin");
+  };
+
   useEffect(() => {
     setIsFollowersModalOpen(false);
     setIsFollowingModalOpen(false);
@@ -205,16 +210,44 @@ export default function ProfileHeader({
       {/* Follow/Unfollow Button */}
       <div style={{ marginTop: "10px" }}>
         {username === loggedUser ? (
-          <Button
+          <div
             style={{
-              borderRadius: "20px",
-              backgroundColor: "#85182a",
-              color: "white",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "10px",
+              marginTop: "10px",
             }}
-            onClick={() => setIsChangeUsernameOpen(true)}
           >
-            Change Username
-          </Button>
+            <Button
+              style={{
+                borderRadius: "20px",
+                backgroundColor: "#85182a",
+                color: "white",
+                fontWeight: "bold",
+                padding: "5px 15px",
+                border: "none",
+                boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+              }}
+              onClick={() => setIsChangeUsernameOpen(true)}
+            >
+              Change Username
+            </Button>
+            <Button
+              style={{
+                borderRadius: "20px",
+                backgroundColor: "white",
+                color: "#85182a",
+                fontWeight: "bold",
+                padding: "5px 15px",
+                border: "none",
+                boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+              }}
+              onClick={handleSignOut}
+            >
+              Sign Out
+            </Button>
+          </div>
         ) : isFollowing ? (
           <Button
             style={{ borderRadius: "20px" }}
