@@ -14,7 +14,7 @@ const workoutData = [
     value: "STRENGTH",
     title: "Strength Training",
     children: [
-      { value: "Bodyuilding", title: "Bodybuilding" },
+      { value: "Bodybuilding", title: "Bodybuilding" },
       { value: "Circuit", title: "Circuit" },
       { value: "Powerlifting", title: "Powerlifting" },
     ],

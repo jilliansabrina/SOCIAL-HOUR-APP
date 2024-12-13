@@ -158,7 +158,7 @@ export async function createPostMutation(
   formData.append("content", content);
   if (location) formData.append("location", location);
   formData.append("workouts", JSON.stringify(workouts));
-  if (images && images.length > 0) {
+  if (images) {
     images.forEach((image) => {
       formData.append("images", image);
     });
@@ -220,4 +220,20 @@ export async function updateUsername(
       Authorization: currentUsername,
     },
   });
+}
+
+export async function fetchUserPostsByYear(username: string, year: number) {
+  // Ensure the username and year are valid
+  if (!username || !year) {
+    throw new Error("Username and year are required.");
+  }
+
+  // Call the API with the appropriate parameters
+  const data = await apiCall<Array<{ date: string; count: number }>>({
+    method: HttpMethod.GET,
+    path: `/api/users/${username}/posts?year=${year}`, // Pass the year as a query parameter
+    headers: generateHeaders(),
+  });
+
+  return data; // Return the fetched data
 }
