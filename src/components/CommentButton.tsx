@@ -16,22 +16,17 @@ import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import {
   addCommentMutation,
+  fetchComments,
   fetchUser,
   deleteCommentMutation,
 } from "@/shared/datasource";
 import dayjs from "dayjs";
 
 type CommentButtonProps = {
-  comments: FeedCommentRecord[];
   postId: number;
-  refetchPost: () => void;
 };
 
-export default function CommentButton({
-  comments,
-  postId,
-  refetchPost,
-}: CommentButtonProps) {
+export default function CommentButton({ postId }: CommentButtonProps) {
   const [loggedUsername] = useUsername();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [text, setText] = useState("");
@@ -41,6 +36,11 @@ export default function CommentButton({
   const { data: profileData } = useQuery({
     queryKey: ["fetch-user", loggedUsername],
     queryFn: () => fetchUser(loggedUsername as string),
+  });
+
+  const { data: fetchedComments = [], refetch: refetchComments } = useQuery({
+    queryKey: ["fetch-comments", postId],
+    queryFn: () => fetchComments(postId),
   });
 
   const { mutate: addComment, isLoading: isCommenting } = useMutation({
@@ -56,8 +56,8 @@ export default function CommentButton({
       );
     },
     onSuccess: () => {
-      refetchPost();
-      setText(""); // Clear input on success
+      refetchComments(); // Refresh comments after adding
+      setText(""); // Clear input
     },
   });
 
@@ -65,12 +65,11 @@ export default function CommentButton({
     mutationFn: async (data: { commentId: number }) => {
       return await deleteCommentMutation(data.commentId);
     },
-    onSuccess: () => refetchPost(),
+    onSuccess: () => refetchComments(),
   });
 
   const showModal = () => {
     setIsModalOpen(true);
-    console.log(comments);
   };
 
   const onCancel = () => {
@@ -91,8 +90,7 @@ export default function CommentButton({
       >
         <MessageTwoTone twoToneColor={"#85182a"} style={{ fontSize: "24px" }} />
         <Typography.Text style={{ marginLeft: "8px" }}>
-          {comments === null ? <Spin size="small" /> : comments?.length}{" "}
-          comments
+          {fetchedComments.length} comments
         </Typography.Text>
       </div>
 
@@ -111,7 +109,7 @@ export default function CommentButton({
         {/* Comments List */}
         <List
           itemLayout="horizontal"
-          dataSource={comments}
+          dataSource={fetchedComments}
           renderItem={(comment: FeedCommentRecord) => (
             <List.Item
               key={comment.id}
@@ -131,12 +129,12 @@ export default function CommentButton({
                     }}
                   >
                     {comment.author?.username
-                      ? comment.author?.username?.[0]?.toUpperCase()
+                      ? comment.author.username[0]?.toUpperCase()
                       : "?"}
                   </Avatar>
                 }
                 title={
-                  comment.author?.username ? (
+                  comment.author ? (
                     <Typography.Text
                       style={{
                         cursor: "pointer",
@@ -163,7 +161,6 @@ export default function CommentButton({
                       alignItems: "flex-start",
                     }}
                   >
-                    {/* Timestamp as a subtitle */}
                     <Tooltip
                       title={dayjs(comment.timestamp).format(
                         "ddd MMM Do YYYY h:mm A"
@@ -185,48 +182,42 @@ export default function CommentButton({
                             )} days ago`}
                       </Typography.Text>
                     </Tooltip>
-
-                    {/* Comment Content and Delete Button */}
                     <div
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        width: "100%",
-                        gap: "10px",
+                        padding: "10px",
+                        backgroundColor: "#f6f8fa",
+                        borderRadius: "10px",
+                        border: "1px solid #e8e8e8",
+                        fontStyle: "italic",
                       }}
                     >
-                      {/* Comment Content */}
-                      <div
-                        style={{
-                          padding: "10px",
-                          backgroundColor: "#f6f8fa",
-                          borderRadius: "10px",
-                          border: "1px solid #e8e8e8",
-                          fontStyle: "italic",
-                          flexGrow: 1,
-                        }}
-                      >
-                        <Typography.Text>{comment.content}</Typography.Text>
-                      </div>
-
-                      {/* Delete Button */}
-                      {loggedUsername === comment.author?.username && (
-                        <DeleteOutlined
-                          onClick={() =>
-                            deleteComment({ commentId: comment.id })
-                          }
-                          style={{
-                            color: "#85182a",
-                            fontSize: "16px",
-                            cursor: "pointer",
-                            position: "relative",
-                          }}
-                        />
-                      )}
+                      <Typography.Text>{comment.content}</Typography.Text>
                     </div>
                   </div>
                 }
               />
+              {loggedUsername === comment.author?.username && (
+                <div
+                  style={{
+                    marginTop: "10px",
+                    textAlign: "right",
+                  }}
+                >
+                  <Button
+                    danger
+                    size="small"
+                    onClick={() => deleteComment({ commentId: comment.id })}
+                    style={{
+                      backgroundColor: "#85182a",
+                      borderColor: "#85182a",
+                      color: "white",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              )}
             </List.Item>
           )}
         />

@@ -88,6 +88,14 @@ export async function fetchLikes(postId: number) {
   return response.data || [];
 }
 
+export async function fetchComments(postId: number) {
+  const response = await apiCall({
+    method: HttpMethod.GET,
+    path: `/api/posts/${postId}/comments`,
+  });
+  return response.data || [];
+}
+
 export async function likePost(postId: number, userId: number) {
   return await apiCall({
     method: HttpMethod.POST,

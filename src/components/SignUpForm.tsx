@@ -1,7 +1,9 @@
 import { fetchCreateUser } from "@/shared/datasource";
 import { Button, Form, Input, Modal, Typography } from "antd";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { useMutation } from "react-query";
+import { useUsername } from "@/shared/hooks/useLocalStorage";
 import { Montserrat } from "next/font/google";
 
 // Import Montserrat font
@@ -23,14 +25,30 @@ type Props = {
 };
 
 export default function SignUpForm({ isModalOpen, setIsModalOpen }: Props) {
-  const { mutate: createUser } = useMutation({
+  const {
+    mutate: createUser,
+    error,
+    data,
+  } = useMutation({
     mutationKey: "createUser",
     mutationFn: async (data: FieldType) => {
       return await fetchCreateUser(data.email, data.username, data.password);
     },
   });
 
+  const [username, setUsername] = useUsername();
+
   const router = useRouter();
+
+  useEffect(() => {
+    if (data) {
+      setIsModalOpen(false);
+      if (typeof setUsername === "function" && data?.data?.user?.username) {
+        setUsername(data.data.user.username); // Store username in local storage
+      }
+      router.push("/feed");
+    }
+  }, [data]);
 
   return (
     <Modal
@@ -58,8 +76,6 @@ export default function SignUpForm({ isModalOpen, setIsModalOpen }: Props) {
             password: val.password,
             confirmPassword: val.confirmPassword,
           });
-          setIsModalOpen(false);
-          router.push("/feed");
         }}
         autoComplete="off"
         layout="vertical"
